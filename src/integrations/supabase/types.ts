@@ -2580,6 +2580,27 @@ export type Database = {
           },
         ]
       }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_streaks: {
         Row: {
           created_at: string
@@ -2747,6 +2768,19 @@ export type Database = {
           career: string
         }[]
       }
+      get_engagement_metrics_for_system: {
+        Args: { target_user_id: string }
+        Returns: {
+          id: string
+          last_reset_date: string
+          posts_engagement_score: number
+          profile_views_today: number
+          profile_views_total: number
+          social_score: number
+          updated_at: string
+          user_id: string
+        }[]
+      }
       get_friend_requests_data: {
         Args: { user_id_param: string }
         Returns: {
@@ -2812,6 +2846,22 @@ export type Database = {
           post_count: number
           slug: string
           tags: string[]
+        }[]
+      }
+      get_public_profile_fields: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          academic_role: string
+          avatar_url: string
+          career: string
+          cover_url: string
+          created_at: string
+          id: string
+          institution_name: string
+          last_seen: string
+          semester: string
+          status: string
+          username: string
         }[]
       }
       get_saved_posts: {
@@ -2891,6 +2941,13 @@ export type Database = {
         Args: { user_id_input: string }
         Returns: string
       }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
       increment_profile_view: {
         Args: { profile_id_param: string; viewer_id_param?: string }
         Returns: undefined
@@ -2945,6 +3002,7 @@ export type Database = {
       }
     }
     Enums: {
+      app_role: "admin" | "moderator" | "user"
       post_visibility: "public" | "friends" | "private" | "incognito"
     }
     CompositeTypes: {
@@ -3073,6 +3131,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      app_role: ["admin", "moderator", "user"],
       post_visibility: ["public", "friends", "private", "incognito"],
     },
   },
