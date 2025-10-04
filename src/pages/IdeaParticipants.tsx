@@ -46,19 +46,6 @@ export default function IdeaParticipants() {
 
         console.log("Post data:", post);
         
-        // 2. Get the participants from idea_participants table (main source)
-        // Fixed: Don't try to join with profiles directly, get the user_ids first
-        const { data: participantsData, error: participantsError } = await supabase
-          .from("idea_participants")
-          .select("id, user_id, profession, created_at")
-          .eq("post_id", id);
-          
-        if (participantsError) {
-          console.error("Error fetching participants:", participantsError);
-        }
-        
-        console.log("Participants data:", participantsData);
-
         // Extract idea title
         let ideaTitle = "Idea";
         if (post?.idea && typeof post.idea === 'object' && 'title' in post.idea) {
@@ -66,45 +53,47 @@ export default function IdeaParticipants() {
         }
         setIdeaTitle(ideaTitle);
         
+        // 2. Get participants with profiles in a single optimized query
+        const { data: participantsData, error: participantsError } = await supabase
+          .from("idea_participants")
+          .select(`
+            id,
+            user_id,
+            profession,
+            created_at,
+            profiles:user_id (
+              id,
+              username,
+              avatar_url,
+              career
+            )
+          `)
+          .eq("post_id", id);
+          
+        if (participantsError) {
+          console.error("Error fetching participants:", participantsError);
+        }
+        
+        console.log("Participants data:", participantsData);
+        
         // 3. Process participants from idea_participants table
         const formattedParticipants: IdeaParticipant[] = [];
         
         if (participantsData && participantsData.length > 0) {
-          // Get user IDs to fetch profiles
-          const userIds = participantsData.map(p => p.user_id);
-          
-          // Fetch profiles for these user IDs
-          const { data: profiles, error: profilesError } = await supabase
-            .from("profiles")
-            .select("id, username, avatar_url, career")
-            .in("id", userIds);
-            
-          if (profilesError) {
-            console.error("Error fetching profiles:", profilesError);
-          }
-          
-          if (profiles && profiles.length > 0) {
-            // Create a map of user_id to profile data for easier lookup
-            const profileMap = new Map();
-            profiles.forEach(profile => {
-              profileMap.set(profile.id, profile);
-            });
-            
-            // Create formatted participants with profile data
-            participantsData.forEach(participant => {
-              const profile = profileMap.get(participant.user_id);
-              if (profile) {
-                formattedParticipants.push({
-                  user_id: participant.user_id,
-                  profession: participant.profession || "No especificado",
-                  career: profile.career || "No especificado",
-                  joined_at: participant.created_at,
-                  username: profile.username || "Usuario",
-                  avatar_url: profile.avatar_url
-                });
-              }
-            });
-          }
+          // Format participants with profile data already joined
+          participantsData.forEach((participant: any) => {
+            const profile = participant.profiles;
+            if (profile) {
+              formattedParticipants.push({
+                user_id: participant.user_id,
+                profession: participant.profession || "No especificado",
+                career: profile.career || "No especificado",
+                joined_at: participant.created_at,
+                username: profile.username || "Usuario",
+                avatar_url: profile.avatar_url
+              });
+            }
+          });
         }
         
         // 4. If no participants found in idea_participants, try to get from JSON field
