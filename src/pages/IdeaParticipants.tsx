@@ -96,7 +96,8 @@ export default function IdeaParticipants() {
               if (profile) {
                 formattedParticipants.push({
                   user_id: participant.user_id,
-                  profession: participant.profession || profile.career || "No especificado",
+                  profession: participant.profession || "No especificado",
+                  career: profile.career || "No especificado",
                   joined_at: participant.created_at,
                   username: profile.username || "Usuario",
                   avatar_url: profile.avatar_url
@@ -127,6 +128,7 @@ export default function IdeaParticipants() {
                 fullParticipants.push({
                   user_id: p.user_id,
                   profession: p.profession || "No especificado",
+                  career: p.career || "No especificado",
                   joined_at: p.joined_at || new Date().toISOString(),
                   username: p.username || "Usuario",
                   avatar_url: p.avatar_url
@@ -153,7 +155,8 @@ export default function IdeaParticipants() {
                   user_id: profile.id,
                   username: profile.username || "Usuario",
                   avatar_url: profile.avatar_url || null,
-                  profession: profile.career || "No especificado",
+                  profession: "No especificado",
+                  career: profile.career || "No especificado",
                   joined_at: new Date().toISOString()
                 }));
                 
@@ -252,11 +255,20 @@ export default function IdeaParticipants() {
                         </AvatarFallback>
                       )}
                     </Avatar>
-                    <div className="flex flex-col">
+                    <div className="flex flex-col gap-1">
                       <span className="font-medium">{participant.username || 'Usuario'}</span>
-                      <Badge variant="outline" className="mt-1 w-fit">
-                        {participant.profession || 'No especificado'}
-                      </Badge>
+                      <div className="flex flex-wrap gap-1">
+                        {participant.career && participant.career !== 'No especificado' && (
+                          <Badge variant="secondary" className="text-xs">
+                            🎓 {participant.career}
+                          </Badge>
+                        )}
+                        {participant.profession && participant.profession !== 'No especificado' && (
+                          <Badge variant="outline" className="text-xs">
+                            💼 {participant.profession}
+                          </Badge>
+                        )}
+                      </div>
                     </div>
                   </li>
                 ))}

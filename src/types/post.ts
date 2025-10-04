@@ -85,6 +85,7 @@ export interface IdeaParticipant {
   joined_at: string;
   username?: string;
   avatar_url?: string;
+  career?: string;
 }
 
 export interface Marketplace {
