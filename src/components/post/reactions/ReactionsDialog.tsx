@@ -42,7 +42,7 @@ export function ReactionsDialog({ postId, open, onOpenChange }: ReactionsDialogP
           reaction_type,
           created_at,
           user_id,
-          profiles!reactions_user_id_fkey (
+          profiles (
             username,
             avatar_url,
             career
