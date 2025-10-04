@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 export async function fetchPostComments(postId: string) {
   try {
+    // Fetch comments without reactions embed to avoid ambiguity
     let { data: comments, error } = await supabase
       .from("comments")
       .select(`
@@ -11,8 +12,7 @@ export async function fetchPostComments(postId: string) {
           username,
           avatar_url,
           id
-        ),
-        reactions:reactions (*)
+        )
       `)
       .eq("post_id", postId)
       .order("created_at", { ascending: false });
@@ -21,7 +21,37 @@ export async function fetchPostComments(postId: string) {
       throw error;
     }
 
-    return comments || [];
+    if (!comments || comments.length === 0) {
+      return [];
+    }
+
+    // Get comment IDs
+    const commentIds = comments.map(c => c.id);
+
+    // Fetch reactions for all comments separately
+    const { data: reactions } = await supabase
+      .from("reactions")
+      .select("id, comment_id, reaction_type, user_id")
+      .in("comment_id", commentIds);
+
+    // Group reactions by comment_id
+    const reactionsByComment: Record<string, any[]> = {};
+    if (reactions) {
+      reactions.forEach(reaction => {
+        if (!reactionsByComment[reaction.comment_id]) {
+          reactionsByComment[reaction.comment_id] = [];
+        }
+        reactionsByComment[reaction.comment_id].push(reaction);
+      });
+    }
+
+    // Attach reactions to comments
+    const commentsWithReactions = comments.map(comment => ({
+      ...comment,
+      reactions: reactionsByComment[comment.id] || []
+    }));
+
+    return commentsWithReactions;
   } catch (error) {
     console.error("Error fetching comments:", error);
     return [];
