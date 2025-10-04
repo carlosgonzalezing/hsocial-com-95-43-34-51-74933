@@ -9,7 +9,6 @@ import { ProjectCreatorModal } from '@/components/projects/ProjectCreatorModal';
 import { ProjectModal } from '@/components/projects/ProjectModal';
 import { Layout } from '@/components/layout';
 import { PROJECT_CATEGORIES, type Project } from '@/types/project';
-import { getDemoProjects } from '@/data/demo-projects';
 
 export default function Projects() {
   const [isCreatorModalOpen, setIsCreatorModalOpen] = useState(false);
@@ -17,9 +16,9 @@ export default function Projects() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   
-  // Demo projects for visualization
+  // Sin datos de demostración - solo proyectos reales de la BD
   const isLoading = false;
-  const projects: Project[] = getDemoProjects();
+  const projects: Project[] = [];
 
   const filteredProjects = projects?.filter(project => {
     const matchesSearch = project.title.toLowerCase().includes(searchQuery.toLowerCase()) ||

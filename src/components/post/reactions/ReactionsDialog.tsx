@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
@@ -85,6 +85,9 @@ export function ReactionsDialog({ postId, open, onOpenChange }: ReactionsDialogP
           <DialogTitle className="flex items-center gap-2">
             Reacciones ({reactions.length})
           </DialogTitle>
+          <DialogDescription>
+            Lista de usuarios que reaccionaron a esta publicación
+          </DialogDescription>
         </DialogHeader>
         
         <div className="space-y-3 mt-4">

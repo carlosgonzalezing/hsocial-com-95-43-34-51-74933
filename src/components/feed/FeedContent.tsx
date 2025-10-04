@@ -3,7 +3,6 @@ import { UnifiedPostCard } from "@/components/UnifiedPostCard";
 import { PeopleYouMayKnow } from "@/components/friends/PeopleYouMayKnow";
 import { useIsMobile } from "@/hooks/use-mobile";
 import type { Post } from "@/types/post";
-import { getDemoPostsForFeed } from "@/data/demo-posts";
 
 interface FeedContentProps {
   posts: Post[];
@@ -18,8 +17,8 @@ export function FeedContent({
 }: FeedContentProps) {
   const isMobile = useIsMobile();
   
-  // Mezclar posts reales con posts de demostración
-  const allPosts = getDemoPostsForFeed(posts);
+  // Solo mostrar posts reales de la base de datos
+  const allPosts = posts;
   
   const renderFeedPosts = () => {
     const feedContent = [];
@@ -28,17 +27,14 @@ export function FeedContent({
     for (let i = 0; i < allPosts.length; i++) {
       const post = allPosts[i];
       
-      // Verificar si es un post de demo (no enviar tracking)
-      const isDemo = post.id.startsWith('demo-');
-      
-      // Add a post with tracking (no tracking para posts demo)
+      // Add post with tracking
       feedContent.push(
         <div key={post.id} className="mb-0 w-full">
           <UnifiedPostCard 
             post={post} 
             isInFeed={true}
-            trackPostView={isDemo ? undefined : trackPostView}
-            trackPostInteraction={isDemo ? undefined : trackPostInteraction}
+            trackPostView={trackPostView}
+            trackPostInteraction={trackPostInteraction}
           />
         </div>
       );
