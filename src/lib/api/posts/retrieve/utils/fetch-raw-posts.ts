@@ -10,7 +10,6 @@ export async function fetchRawPosts(userId?: string) {
       .select(`
         *,
         profiles:profiles(*),
-        reactions:reactions(*),
         comments:comments(count),
         post_reports:post_reports(count),
         academic_events:academic_events(*)

@@ -18,7 +18,6 @@ export async function getPosts(userId?: string) {
       .select(`
         *,
         profiles:profiles(*),
-        reactions:reactions(*),
         comments:comments(count)
       `);
 
@@ -47,7 +46,6 @@ export async function getPosts(userId?: string) {
             .select(`
               *,
               profiles:profiles(*),
-              reactions:reactions(*),
               comments:comments(count)
             `)
             .eq("id", post.shared_post_id)
@@ -65,10 +63,23 @@ export async function getPosts(userId?: string) {
         }
       }
 
+      // Obtener reactions count para el post
+      const { count: reactionsCount } = await supabase
+        .from("reactions")
+        .select("*", { count: 'exact', head: true })
+        .eq("post_id", post.id);
+      
       // Verificar si el usuario actual ha reaccionado
-      const userHasReacted = user && post.reactions 
-        ? post.reactions.some((reaction: any) => reaction.user_id === user.id)
-        : false;
+      let userHasReacted = false;
+      if (user) {
+        const { data: userReaction } = await supabase
+          .from("reactions")
+          .select("reaction_type")
+          .eq("post_id", post.id)
+          .eq("user_id", user.id)
+          .maybeSingle();
+        userHasReacted = !!userReaction;
+      }
 
       return {
         ...postWithExtras,
@@ -78,7 +89,7 @@ export async function getPosts(userId?: string) {
         userHasReacted,
         comments_count: post.comments?.[0]?.count || 0,
         user_reaction: null, // Default value
-        reactions_count: Array.isArray(post.reactions) ? post.reactions.length : 0
+        reactions_count: reactionsCount || 0
       };
     }));
 

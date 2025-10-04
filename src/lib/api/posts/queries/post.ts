@@ -8,7 +8,6 @@ export async function getPostById(postId: string) {
       .select(`
         *,
         profiles:profiles(*),
-        reactions:reactions(*),
         comments:comments(count)
       `)
       .eq("id", postId)
@@ -29,7 +28,6 @@ export async function getPostsByUser(userId: string) {
       .select(`
         *,
         profiles:profiles(*),
-        reactions:reactions(*),
         comments:comments(count)
       `)
       .eq("user_id", userId)

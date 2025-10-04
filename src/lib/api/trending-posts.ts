@@ -16,10 +16,6 @@ export async function getTrendingPosts(limit: number = 20): Promise<Post[]> {
           username,
           avatar_url
         ),
-        reactions:likes!post_id (
-          id,
-          reaction_type
-        ),
         comments (
           id
         )
@@ -31,24 +27,29 @@ export async function getTrendingPosts(limit: number = 20): Promise<Post[]> {
     if (error) throw error;
 
     // Calculate trending score for each post
-    const postsWithScore = data?.map((post: any) => {
-      const reactionCount = post.reactions?.length || 0;
+    const postsWithScore = await Promise.all(data?.map(async (post: any) => {
+      // Get reaction count separately
+      const { count: reactionCount } = await supabase
+        .from("reactions")
+        .select("*", { count: 'exact', head: true })
+        .eq("post_id", post.id);
+        
       const commentCount = post.comments?.length || 0;
       const hoursAgo = (Date.now() - new Date(post.created_at).getTime()) / (1000 * 60 * 60);
       
       // Trending score: (reactions * 2 + comments * 3) / (hours + 1)
       // This gives more weight to recent posts with high engagement
-      const trendingScore = (reactionCount * 2 + commentCount * 3) / (hoursAgo + 1);
+      const trendingScore = ((reactionCount || 0) * 2 + commentCount * 3) / (hoursAgo + 1);
       
       return {
         ...post,
         author_id: post.user_id,
         author: post.profiles,
         trending_score: trendingScore,
-        reaction_count: reactionCount,
+        reaction_count: reactionCount || 0,
         comment_count: commentCount
       };
-    }) || [];
+    }) || []);
 
     // Sort by trending score and return top posts
     return postsWithScore
@@ -74,9 +75,6 @@ export async function getTopPostsToday(limit: number = 10): Promise<Post[]> {
           username,
           avatar_url
         ),
-        reactions:likes!post_id (
-          id
-        ),
         comments (
           id
         )
@@ -88,12 +86,20 @@ export async function getTopPostsToday(limit: number = 10): Promise<Post[]> {
     if (error) throw error;
 
     // Sort by total interactions
-    const postsWithInteractions = data?.map((post: any) => ({
-      ...post,
-      author_id: post.user_id,
-      author: post.profiles,
-      total_interactions: (post.reactions?.length || 0) + (post.comments?.length || 0)
-    })) || [];
+    const postsWithInteractions = await Promise.all(data?.map(async (post: any) => {
+      // Get reaction count separately
+      const { count: reactionCount } = await supabase
+        .from("reactions")
+        .select("*", { count: 'exact', head: true })
+        .eq("post_id", post.id);
+        
+      return {
+        ...post,
+        author_id: post.user_id,
+        author: post.profiles,
+        total_interactions: (reactionCount || 0) + (post.comments?.length || 0)
+      };
+    }) || []);
 
     return postsWithInteractions
       .sort((a, b) => b.total_interactions - a.total_interactions)

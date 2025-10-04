@@ -10,7 +10,6 @@ export async function fetchRawPosts(userId?: string) {
       .select(`
         *,
         profiles:profiles(*),
-        reactions:reactions(*),
         comments:comments(count)
       `);
 
