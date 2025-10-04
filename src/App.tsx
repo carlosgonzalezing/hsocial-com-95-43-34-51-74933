@@ -35,6 +35,7 @@ const SecuritySettings = React.lazy(() => import("@/pages/settings/SecuritySetti
 const NotificationSettings = React.lazy(() => import("@/pages/NotificationSettings"));
 const StatisticsSettings = React.lazy(() => import("@/pages/settings/StatisticsSettings"));
 const NotFound = React.lazy(() => import("@/pages/NotFound"));
+const IdeaParticipants = React.lazy(() => import("@/pages/IdeaParticipants"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -180,6 +181,14 @@ const App = () => {
                 </AuthGuard>
               } />
               
+              {/* Idea participants page */}
+              <Route path="/idea/:postId/participants" element={
+                <AuthGuard>
+                  <Suspense fallback={<LoadingSpinner />}>
+                    <IdeaParticipants />
+                  </Suspense>
+                </AuthGuard>
+              } />
               
               {/* 404 fallback */}
               <Route path="*" element={
