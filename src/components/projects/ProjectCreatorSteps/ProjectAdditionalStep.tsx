@@ -1,18 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { X, Plus, Upload, Link } from 'lucide-react';
+import { X, Plus, Upload, Link, ImageIcon } from 'lucide-react';
 import { type ProjectFormData, type AdditionalLink } from '@/types/project';
 
 interface ProjectAdditionalStepProps {
   formData: ProjectFormData;
   updateFormData: (updates: Partial<ProjectFormData>) => void;
+  imageFile: File | null;
+  setImageFile: (file: File | null) => void;
 }
 
-export function ProjectAdditionalStep({ formData, updateFormData }: ProjectAdditionalStepProps) {
+export function ProjectAdditionalStep({ formData, updateFormData, imageFile, setImageFile }: ProjectAdditionalStepProps) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file && file.type.startsWith('image/')) {
+      setImageFile(file);
+    }
+  };
   const [memberInput, setMemberInput] = useState('');
   const [linkTitle, setLinkTitle] = useState('');
   const [linkUrl, setLinkUrl] = useState('');
@@ -127,20 +137,51 @@ export function ProjectAdditionalStep({ formData, updateFormData }: ProjectAddit
         />
       </div>
 
-      {/* Cover Image */}
+      {/* Cover Image Upload */}
       <div className="space-y-2">
         <Label className="text-sm font-medium flex items-center gap-2">
-          <Upload size={16} />
-          Búsqueda de Imagen de Portada
+          <ImageIcon size={16} />
+          Imagen de Portada del Proyecto
         </Label>
-        <Input
-          placeholder="AI technology, web development, mobile app (deja vacío para auto-generar)"
-          value={formData.image_url}
-          onChange={(e) => updateFormData({ image_url: e.target.value })}
-          className="w-full"
+        <div className="flex gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => fileInputRef.current?.click()}
+            className="w-full"
+          >
+            <Upload size={16} className="mr-2" />
+            {imageFile ? 'Cambiar imagen' : 'Subir imagen'}
+          </Button>
+          {imageFile && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              onClick={() => setImageFile(null)}
+            >
+              <X size={16} />
+            </Button>
+          )}
+        </div>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          onChange={handleImageSelect}
+          className="hidden"
         />
+        {imageFile && (
+          <div className="relative w-full h-48 rounded-lg overflow-hidden border">
+            <img
+              src={URL.createObjectURL(imageFile)}
+              alt="Preview"
+              className="w-full h-full object-cover"
+            />
+          </div>
+        )}
         <p className="text-xs text-muted-foreground">
-          Describe tu proyecto para generar una imagen automática, o deja vacío para usar la imagen por defecto
+          Sube una imagen representativa de tu proyecto (máx. 20MB)
         </p>
       </div>
 

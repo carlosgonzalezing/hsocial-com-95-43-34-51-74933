@@ -22,7 +22,7 @@ interface ProjectCreatorModalProps {
 
 export function ProjectCreatorModal({ open, onOpenChange }: ProjectCreatorModalProps) {
   const [currentStep, setCurrentStep] = useState(1);
-  const { formData, updateFormData, resetForm, isSubmitting, submitProject } = useProjectCreator();
+  const { formData, updateFormData, resetForm, isSubmitting, submitProject, imageFile, setImageFile } = useProjectCreator();
 
   const totalSteps = 4;
   const progress = (currentStep / totalSteps) * 100;
@@ -112,6 +112,8 @@ export function ProjectCreatorModal({ open, onOpenChange }: ProjectCreatorModalP
           <ProjectAdditionalStep
             formData={formData}
             updateFormData={updateFormData}
+            imageFile={imageFile}
+            setImageFile={setImageFile}
           />
         );
       default:

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { type ProjectFormData } from '@/types/project';
+import { createProject } from '@/lib/api/projects/create-project';
 
 const initialFormData: ProjectFormData = {
   // Step 1: Basic Info
@@ -36,6 +37,7 @@ const initialFormData: ProjectFormData = {
 
 export function useProjectCreator() {
   const [formData, setFormData] = useState<ProjectFormData>(initialFormData);
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const updateFormData = (updates: Partial<ProjectFormData>) => {
@@ -49,14 +51,9 @@ export function useProjectCreator() {
   const submitProject = async () => {
     setIsSubmitting(true);
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // TODO: Implement actual project creation API call
-      console.log('Creating project:', formData);
-      
-      // Reset form after successful submission
+      await createProject(formData, imageFile || undefined);
       resetForm();
+      setImageFile(null);
     } catch (error) {
       console.error('Error creating project:', error);
       throw error;
@@ -70,6 +67,8 @@ export function useProjectCreator() {
     updateFormData,
     resetForm,
     isSubmitting,
-    submitProject
+    submitProject,
+    imageFile,
+    setImageFile
   };
 }
