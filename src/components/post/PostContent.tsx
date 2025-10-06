@@ -86,7 +86,7 @@ export function PostContent({ post, postId }: PostContentProps) {
             <PostImage
               src={post.media_url || ''}
               alt="Contenido multimedia del post"
-              className="max-w-full max-h-[400px] object-contain rounded-lg cursor-zoom-in shadow-md"
+              className="w-full h-auto rounded-lg cursor-zoom-in shadow-md"
               onClick={() => setIsImageModalOpen(true)}
             />
           ) : post.media_type?.startsWith('video') || post.media_type === 'video' ? (

@@ -36,7 +36,7 @@ export function SharedPostContent({ post }: SharedPostContentProps) {
             <PostImage
               src={post.media_url}
               alt="Media"
-              className="max-w-full max-h-[300px] object-contain rounded-lg cursor-zoom-in"
+              className="w-full h-auto rounded-lg cursor-zoom-in"
               onClick={() => setIsModalOpen(true)}
             />
           </div>
