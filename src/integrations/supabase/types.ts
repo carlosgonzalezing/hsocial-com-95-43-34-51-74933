@@ -1682,6 +1682,7 @@ export type Database = {
           opportunity_type: string | null
           poll: Json | null
           post_type: string | null
+          project_status: string | null
           updated_at: string
           user_id: string
           visibility: Database["public"]["Enums"]["post_visibility"]
@@ -1700,6 +1701,7 @@ export type Database = {
           opportunity_type?: string | null
           poll?: Json | null
           post_type?: string | null
+          project_status?: string | null
           updated_at?: string
           user_id: string
           visibility?: Database["public"]["Enums"]["post_visibility"]
@@ -1718,6 +1720,7 @@ export type Database = {
           opportunity_type?: string | null
           poll?: Json | null
           post_type?: string | null
+          project_status?: string | null
           updated_at?: string
           user_id?: string
           visibility?: Database["public"]["Enums"]["post_visibility"]
@@ -2724,6 +2727,10 @@ export type Database = {
       }
       confirm_payment_and_activate_subscription: {
         Args: { admin_user_id_param?: string; payment_id_param: string }
+        Returns: Json
+      }
+      convert_idea_to_project: {
+        Args: { new_status?: string; post_id_param: string }
         Returns: Json
       }
       create_academic_event_atomic: {

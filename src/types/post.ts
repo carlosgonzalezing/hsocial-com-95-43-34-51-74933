@@ -28,6 +28,7 @@ export interface Post {
   comments_count?: number;
   userHasReacted?: boolean; // Add missing property
   content_style?: ContentStyle | null; // Add content style for background/text formatting
+  project_status?: 'idea' | 'in_progress' | 'completed' | null; // Ideas → Projects flow
 }
 
 export interface ContentStyle {
@@ -69,6 +70,7 @@ export interface Idea {
   resources_needed?: Array<string>;
   collaboration_type?: 'remote' | 'hybrid' | 'in-person';
   location_preference?: string;
+  contact_link?: string; // WhatsApp, Telegram, or other contact link
 }
 
 export interface NeededRole {

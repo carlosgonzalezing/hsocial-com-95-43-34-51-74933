@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Search, Plus, Filter } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -9,16 +9,79 @@ import { ProjectCreatorModal } from '@/components/projects/ProjectCreatorModal';
 import { ProjectModal } from '@/components/projects/ProjectModal';
 import { Layout } from '@/components/layout';
 import { PROJECT_CATEGORIES, type Project } from '@/types/project';
+import { supabase } from '@/integrations/supabase/client';
+import { useQuery } from '@tanstack/react-query';
 
 export default function Projects() {
   const [isCreatorModalOpen, setIsCreatorModalOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [selectedStatus, setSelectedStatus] = useState<string>('all');
   
-  // Sin datos de demostración - solo proyectos reales de la BD
-  const isLoading = false;
-  const projects: Project[] = [];
+  // Query para obtener ideas convertidas a proyectos
+  const { data: projectPosts = [], isLoading } = useQuery({
+    queryKey: ['project-posts', selectedStatus],
+    queryFn: async () => {
+      let query = supabase
+        .from('posts')
+        .select(`
+          *,
+          profiles!posts_user_id_fkey (
+            id,
+            username,
+            avatar_url
+          )
+        `)
+        .eq('post_type', 'idea')
+        .not('project_status', 'is', null)
+        .order('updated_at', { ascending: false });
+      
+      if (selectedStatus !== 'all') {
+        query = query.eq('project_status', selectedStatus);
+      }
+      
+      const { data, error } = await query;
+      
+      if (error) throw error;
+      return data || [];
+    }
+  });
+
+  // Convertir posts a formato Project
+  const projects: Project[] = useMemo(() => {
+    return projectPosts.map((post: any) => {
+      const idea = post.idea || {};
+      return {
+        id: post.id,
+        title: idea.title || 'Sin título',
+        description: idea.description || post.content || '',
+        short_description: idea.description?.substring(0, 150) || '',
+        objectives: idea.expected_impact || '',
+        status: post.project_status === 'in_progress' ? 'development' : 
+                post.project_status === 'completed' ? 'completed' : 'planning',
+        category: idea.category || 'Otro',
+        technologies: idea.resources_needed || [],
+        tags: [],
+        is_open_source: false,
+        seeking_collaborators: post.project_status === 'in_progress',
+        author_id: post.user_id,
+        author: post.profiles ? {
+          id: post.profiles.id,
+          username: post.profiles.username || 'Usuario',
+          avatar_url: post.profiles.avatar_url
+        } : undefined,
+        team_members: [],
+        contact_email: '',
+        additional_links: [],
+        likes_count: 0,
+        comments_count: 0,
+        views_count: 0,
+        created_at: post.created_at,
+        updated_at: post.updated_at
+      };
+    });
+  }, [projectPosts]);
 
   const filteredProjects = projects?.filter(project => {
     const matchesSearch = project.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -90,6 +153,21 @@ export default function Projects() {
                         {category}
                       </SelectItem>
                     ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Status Filter */}
+              <div className="flex items-center gap-2 md:w-48">
+                <Select value={selectedStatus} onValueChange={setSelectedStatus}>
+                  <SelectTrigger className="rounded-lg border-2">
+                    <SelectValue placeholder="Todos los estados" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Todos los estados</SelectItem>
+                    <SelectItem value="idea">💡 Ideas</SelectItem>
+                    <SelectItem value="in_progress">🚀 En Desarrollo</SelectItem>
+                    <SelectItem value="completed">✅ Completados</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

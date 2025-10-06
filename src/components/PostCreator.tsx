@@ -17,6 +17,7 @@ import { uploadMediaFile, getMediaType } from "@/lib/api/posts/storage";
 import { v4 as uuidv4 } from "uuid";
 import { useDraft } from "@/hooks/use-draft";
 import { useAutoResize } from "@/hooks/use-auto-resize";
+import { useQueryClient } from "@tanstack/react-query";
 
 export interface Idea {
   title: string;
@@ -24,6 +25,7 @@ export interface Idea {
   required_skills: string[];
   max_participants: number;
   deadline?: string;
+  contact_link?: string;
 }
 
 export interface EventForm {
@@ -76,8 +78,10 @@ export function PostCreator({
     title: "",
     description: "",
     required_skills: [],
-    max_participants: 5
+    max_participants: 5,
+    contact_link: ""
   });
+  const [tempSkills, setTempSkills] = useState(""); // Temporary state for skills input
   const [evento, setEvento] = useState<EventForm>({
     title: "",
     description: "",
@@ -91,6 +95,7 @@ export function PostCreator({
   });
 
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const finalTextareaRef = externalTextareaRef || textareaRef;
   const { clearDraft } = useDraft(content, setContent);
@@ -240,8 +245,10 @@ export function PostCreator({
           description: idea.description,
           required_skills: idea.required_skills,
           max_participants: idea.max_participants,
-          deadline: idea.deadline || null
+          deadline: idea.deadline || null,
+          contact_link: idea.contact_link || null
         };
+        postData.project_status = 'idea'; // Mark as idea initially
       }
 
       console.log("Creating post with data:", postData);
@@ -387,8 +394,10 @@ export function PostCreator({
           title: "",
           description: "",
           required_skills: [],
-          max_participants: 5
+          max_participants: 5,
+          contact_link: ""
         });
+        setTempSkills("");
         setEvento({
           title: "",
           description: "",
@@ -419,6 +428,9 @@ export function PostCreator({
 
       console.log('Post created successfully:', newPost);
       
+      // Invalidate queries to update feed immediately
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
+      queryClient.invalidateQueries({ queryKey: ["personalized-feed"] });
 
       mobileToasts.postCreated();
 
@@ -442,8 +454,10 @@ export function PostCreator({
         title: "",
         description: "",
         required_skills: [],
-        max_participants: 5
+        max_participants: 5,
+        contact_link: ""
       });
+      setTempSkills("");
       setEvento({
         title: "",
         description: "",
@@ -645,9 +659,33 @@ export function PostCreator({
             <Textarea
               id="idea-skills"
               placeholder="Ej: React, Node.js, Diseño UI"
-              value={idea.required_skills.join(', ')}
-              onChange={(e) => setIdea({ ...idea, required_skills: e.target.value.split(',').map(s => s.trim()) })}
+              value={tempSkills}
+              onChange={(e) => setTempSkills(e.target.value)}
+              onBlur={(e) => {
+                // Process skills only when leaving the field
+                const skills = e.target.value
+                  .split(',')
+                  .map(s => s.trim())
+                  .filter(s => s.length > 0);
+                setIdea({ ...idea, required_skills: skills });
+              }}
             />
+          </div>
+          <div className="space-y-2">
+            <label htmlFor="idea-contact" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+              Enlace de contacto (opcional)
+            </label>
+            <input
+              type="url"
+              id="idea-contact"
+              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              placeholder="https://wa.me/1234567890 o https://t.me/usuario"
+              value={idea.contact_link || ""}
+              onChange={(e) => setIdea({ ...idea, contact_link: e.target.value })}
+            />
+            <p className="text-xs text-muted-foreground">
+              Comparte un enlace de WhatsApp o Telegram para contacto directo
+            </p>
           </div>
           <div className="space-y-2">
             <label htmlFor="idea-participants" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">

@@ -1,8 +1,9 @@
 
-import { Lightbulb, Users, Clock, Target, MapPin, Briefcase } from "lucide-react";
+import { Lightbulb, Users, Clock, Target, MapPin, Briefcase, MessageCircle } from "lucide-react";
 import type { Idea } from "@/types/post";
 import { MentionsText } from "./MentionsText";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 interface IdeaContentProps {
   idea: Idea;
@@ -144,6 +145,21 @@ export function IdeaContent({ idea, content }: IdeaContentProps) {
           {idea.collaboration_type && (
             <div className="text-sm text-muted-foreground">
               <span className="font-medium text-foreground">Modalidad:</span> {idea.collaboration_type}
+            </div>
+          )}
+          
+          {/* Contact Button */}
+          {idea.contact_link && (
+            <div className="pt-2 border-t border-border">
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-full"
+                onClick={() => window.open(idea.contact_link, '_blank')}
+              >
+                <MessageCircle className="h-4 w-4 mr-2" />
+                Contactar
+              </Button>
             </div>
           )}
         </div>

@@ -129,7 +129,7 @@ export function PostContent({ post, postId }: PostContentProps) {
       
       {hasIdea && (
         <div className="mt-4">
-          <PostIdea idea={post.idea} postId={postId} />
+          <PostIdea idea={post.idea} postId={postId} post={post} />
         </div>
       )}
 
