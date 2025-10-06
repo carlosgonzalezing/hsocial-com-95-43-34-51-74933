@@ -252,18 +252,18 @@ export default function Projects() {
           </div>
         </div>
 
-        {/* Projects Grid - Better responsive layout */}
+        {/* Projects List - Single Column */}
         <div className="container mx-auto px-4 py-12">
           {isLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-              {[...Array(6)].map((_, i) => (
+            <div className="max-w-5xl mx-auto space-y-6">
+              {[...Array(4)].map((_, i) => (
                 <div key={i} className="animate-pulse">
-                  <div className="bg-muted rounded-xl h-96"></div>
+                  <div className="bg-muted rounded-xl h-56"></div>
                 </div>
               ))}
             </div>
           ) : filteredProjects.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+            <div className="max-w-5xl mx-auto space-y-6">
               {filteredProjects.map((project) => (
                 <ProjectCard
                   key={project.id}

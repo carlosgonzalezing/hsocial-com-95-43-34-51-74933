@@ -56,7 +56,10 @@ export function useProjectCreator() {
       await createProject(formData, imageFile || undefined);
       
       // Invalidate projects query to refresh the Projects page
-      queryClient.invalidateQueries({ queryKey: ['project-posts'] });
+      queryClient.invalidateQueries({ 
+        queryKey: ['project-posts'],
+        exact: false  // Invalida todos los queries que empiecen con 'project-posts'
+      });
       
       resetForm();
       setImageFile(null);
