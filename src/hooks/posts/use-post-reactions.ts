@@ -37,10 +37,17 @@ export function usePostReactions(postId: string) {
     
     setIsReacting(true);
     
+    // Optimistic update: actualizar UI inmediatamente
+    const previousReaction = userReaction;
+    const newReaction = userReaction === type ? null : type;
+    setUserReaction(newReaction);
+    
     try {
       // Verificar autenticación
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
+        // Revertir cambio optimista
+        setUserReaction(previousReaction);
         toast({
           title: "Error",
           description: "Debes iniciar sesión para reaccionar",
@@ -49,28 +56,47 @@ export function usePostReactions(postId: string) {
         return;
       }
 
+      // Actualizar cache de React Query optimistamente
+      queryClient.setQueryData(['posts'], (oldData: any) => {
+        if (!oldData?.pages) return oldData;
+        return {
+          ...oldData,
+          pages: oldData.pages.map((page: any) => ({
+            ...page,
+            data: page.data?.map((post: any) => {
+              if (post.id !== postId) return post;
+              
+              // Actualizar contadores de reacciones
+              const reactions = post.reactions || [];
+              let newReactions = [...reactions];
+              
+              if (newReaction) {
+                // Añadir o cambiar reacción
+                const existingIndex = newReactions.findIndex((r: any) => r.user_id === user.id);
+                if (existingIndex >= 0) {
+                  newReactions[existingIndex] = { ...newReactions[existingIndex], reaction_type: newReaction };
+                } else {
+                  newReactions.push({ user_id: user.id, reaction_type: newReaction });
+                }
+              } else {
+                // Eliminar reacción
+                newReactions = newReactions.filter((r: any) => r.user_id !== user.id);
+              }
+              
+              return { ...post, reactions: newReactions, user_reaction: newReaction };
+            })
+          }))
+        };
+      });
+
       // Usar la función optimizada
       const result = await toggleReactionOptimized(postId, undefined, type);
 
-      if (result.success) {
-        if (result.action === "removed") {
-          setUserReaction(null);
-          toast({
-            title: "Reacción eliminada",
-            description: "Tu reacción se ha eliminado",
-          });
-        } else if (result.action === "added") {
-          setUserReaction(type);
-          toast({
-            title: "¡Reacción añadida!",
-            description: "Tu reacción se ha guardado",
-          });
-        }
-        
-        // Invalidar queries para actualizar la UI
+      if (!result.success) {
+        // Revertir cambio optimista en caso de error
+        setUserReaction(previousReaction);
         queryClient.invalidateQueries({ queryKey: ['posts'] });
-        queryClient.invalidateQueries({ queryKey: ['post-reactions', postId] });
-      } else {
+        
         toast({
           title: "Error",
           description: result.error || "Error al procesar la reacción",
@@ -79,6 +105,10 @@ export function usePostReactions(postId: string) {
       }
     } catch (error: any) {
       console.error('Error in onReaction:', error);
+      // Revertir cambio optimista
+      setUserReaction(previousReaction);
+      queryClient.invalidateQueries({ queryKey: ['posts'] });
+      
       toast({
         title: "Error",
         description: error.message || "Error al procesar la reacción",
@@ -87,7 +117,7 @@ export function usePostReactions(postId: string) {
     } finally {
       setIsReacting(false);
     }
-  }, [isReacting, queryClient, toast]);
+  }, [isReacting, queryClient, toast, userReaction]);
 
   return {
     isReacting,

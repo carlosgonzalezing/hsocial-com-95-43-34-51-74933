@@ -43,7 +43,7 @@ export function useSubscriptionManager() {
     // Set up the channel with the provided callback
     setupCallback(newChannel);
     
-    // Create subscription promise with better error handling
+    // Create subscription promise with better error handling - timeout reducido para detección rápida
     const subscriptionPromise = new Promise<string>((resolve, reject) => {
       const timeout = setTimeout(() => {
         const channelInfo = channelsRef.current.get(channelName);
@@ -51,7 +51,7 @@ export function useSubscriptionManager() {
           channelInfo.isSubscribed = false;
         }
         reject(new Error(`Subscription timeout for ${channelName}`));
-      }, 8000);
+      }, 5000);
 
       newChannel.subscribe((status) => {        
         if (status === 'SUBSCRIBED') {

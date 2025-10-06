@@ -22,6 +22,9 @@ export function PostActivitySummary({
   if (!hasActivity) {
     return null;
   }
+  
+  // Si los datos están cargando, usar valores optimistas desde el cache
+  const isOptimisticData = post.user_reaction && totalReactions === 0;
 
   return (
     <div className="flex items-center justify-between px-6 py-3 text-xs text-muted-foreground/80 border-b border-border/50">

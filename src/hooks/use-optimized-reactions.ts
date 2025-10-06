@@ -52,34 +52,67 @@ export function useOptimizedReactions({ postId, commentId }: UseOptimizedReactio
     loadUserReaction();
   }, [postId, commentId, cacheKey, reactionCache]);
 
-  // Función optimizada para toggle de reacciones
+  // Función optimizada con debouncing y optimistic updates
   const toggleReaction = useCallback(async (reactionType: ReactionType = 'love') => {
     if (isLoading) return; // Prevenir clicks múltiples
     
     setIsLoading(true);
     
+    // Optimistic update: actualizar UI inmediatamente
+    const previousReaction = userReaction;
+    const newReaction = userReaction === reactionType ? null : reactionType;
+    setUserReaction(newReaction);
+    setReactionCache(prev => new Map(prev).set(cacheKey, newReaction));
+    
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      // Actualizar cache de React Query optimistamente
+      if (postId) {
+        queryClient.setQueryData(['posts'], (oldData: any) => {
+          if (!oldData?.pages) return oldData;
+          return {
+            ...oldData,
+            pages: oldData.pages.map((page: any) => ({
+              ...page,
+              data: page.data?.map((post: any) => {
+                if (post.id !== postId) return post;
+                
+                const reactions = post.reactions || [];
+                let newReactions = [...reactions];
+                
+                if (newReaction && user) {
+                  const existingIndex = newReactions.findIndex((r: any) => r.user_id === user.id);
+                  if (existingIndex >= 0) {
+                    newReactions[existingIndex] = { ...newReactions[existingIndex], reaction_type: newReaction };
+                  } else {
+                    newReactions.push({ user_id: user.id, reaction_type: newReaction });
+                  }
+                } else if (user) {
+                  newReactions = newReactions.filter((r: any) => r.user_id !== user.id);
+                }
+                
+                return { ...post, reactions: newReactions, user_reaction: newReaction };
+              })
+            }))
+          };
+        });
+      }
+      
       const result = await toggleReactionOptimized(postId, commentId, reactionType);
       
-      if (result.success) {
-        const newReaction = result.action === 'added' ? reactionType : null;
-        setUserReaction(newReaction);
+      if (!result.success) {
+        // Revertir cambio optimista en caso de error
+        setUserReaction(previousReaction);
+        setReactionCache(prev => new Map(prev).set(cacheKey, previousReaction));
         
-        // Actualizar cache local
-        setReactionCache(prev => new Map(prev).set(cacheKey, newReaction));
-        
-        // Invalidar queries relacionadas para refrescar conteos
         if (postId) {
           queryClient.invalidateQueries({ queryKey: ['posts'] });
-          queryClient.invalidateQueries({ queryKey: ['post-reactions', postId] });
         }
-        
         if (commentId) {
           queryClient.invalidateQueries({ queryKey: ['comments'] });
-          queryClient.invalidateQueries({ queryKey: ['comment-reactions', commentId] });
         }
-      } else {
-        // Mostrar error específico
+        
         toast({
           title: "Error",
           description: result.error || "No se pudo procesar la reacción",
@@ -88,6 +121,18 @@ export function useOptimizedReactions({ postId, commentId }: UseOptimizedReactio
       }
     } catch (error: any) {
       console.error('Error toggling reaction:', error);
+      
+      // Revertir cambio optimista
+      setUserReaction(previousReaction);
+      setReactionCache(prev => new Map(prev).set(cacheKey, previousReaction));
+      
+      if (postId) {
+        queryClient.invalidateQueries({ queryKey: ['posts'] });
+      }
+      if (commentId) {
+        queryClient.invalidateQueries({ queryKey: ['comments'] });
+      }
+      
       toast({
         title: "Error",
         description: "Error de conexión. Intenta nuevamente.",
@@ -96,7 +141,7 @@ export function useOptimizedReactions({ postId, commentId }: UseOptimizedReactio
     } finally {
       setIsLoading(false);
     }
-  }, [isLoading, postId, commentId, queryClient, toast, cacheKey]);
+  }, [isLoading, postId, commentId, queryClient, toast, cacheKey, userReaction, supabase]);
 
   // Verificar si el usuario puede reaccionar (no es su propio contenido)
   const canReact = useCallback(async () => {

@@ -51,7 +51,7 @@ export function HoverReactionButton({
         size="sm"
         className={`flex items-center px-3 py-2 transition-all duration-200 ${
           hasReacted ? `${currentColor} bg-red-50 border border-red-200` : 'hover:bg-muted/50 border border-transparent'
-        }`}
+        } ${isSubmitting ? 'opacity-70 cursor-wait' : ''}`}
         onClick={handleButtonClick}
         disabled={isSubmitting}
       >
