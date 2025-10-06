@@ -22,7 +22,7 @@ export const NotificationPreview = ({
             <img 
               src={postMedia} 
               alt="Media de la publicación" 
-              className="h-16 w-auto object-cover rounded"
+              className="h-16 w-auto object-contain rounded"
             />
           </div>
         )}

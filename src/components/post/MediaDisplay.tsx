@@ -69,7 +69,7 @@ export function MediaDisplay({
           alt="Media content" 
           loading="lazy"
           decoding="async"
-          className={cn("w-full h-auto rounded-md cursor-pointer max-h-96 object-cover", className)}
+          className={cn("w-full h-auto rounded-md cursor-pointer max-h-96 object-contain bg-muted/30", className)}
           onClick={handleClick}
           onError={handleMediaError}
           crossOrigin="anonymous"
