@@ -80,7 +80,7 @@ export function OptimizedImage({
   const dataSrcSet = lazy && !priority ? responsiveSrcSet : undefined;
 
   return (
-    <div className={cn("relative overflow-hidden", className)}>
+    <div className={cn("relative", className)}>
       <img
         ref={imgRef}
         src={imgSrc}
@@ -142,7 +142,7 @@ export function PostImage({ src, alt, ...props }: OptimizedImageProps) {
       quality={85}
       lazy={true}
       responsive={true}
-      className="rounded-lg object-cover w-full"
+      className="rounded-lg object-contain w-full bg-muted/30"
       {...props}
     />
   );
