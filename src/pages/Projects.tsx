@@ -19,11 +19,12 @@ export default function Projects() {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedStatus, setSelectedStatus] = useState<string>('all');
   
-  // Query para obtener ideas convertidas a proyectos
+  // Query para obtener TODOS los proyectos (ideas convertidas + proyectos creados)
   const { data: projectPosts = [], isLoading } = useQuery({
     queryKey: ['project-posts', selectedStatus],
     queryFn: async () => {
-      let query = supabase
+      // Obtener ideas convertidas a proyectos
+      let ideasQuery = supabase
         .from('posts')
         .select(`
           *,
@@ -38,48 +39,124 @@ export default function Projects() {
         .order('updated_at', { ascending: false });
       
       if (selectedStatus !== 'all') {
-        query = query.eq('project_status', selectedStatus);
+        ideasQuery = ideasQuery.eq('project_status', selectedStatus);
       }
+
+      // Obtener proyectos creados directamente
+      const showcasesQuery = supabase
+        .from('posts')
+        .select(`
+          *,
+          profiles!posts_user_id_fkey (
+            id,
+            username,
+            avatar_url
+          ),
+          project_showcases!project_showcases_post_id_fkey (
+            project_title,
+            project_description,
+            project_status,
+            technologies_used,
+            github_url,
+            demo_url,
+            project_url,
+            images_urls,
+            seeking_collaborators,
+            collaboration_roles,
+            achievements,
+            industry
+          )
+        `)
+        .eq('post_type', 'project_showcase')
+        .order('updated_at', { ascending: false });
       
-      const { data, error } = await query;
+      const [ideasResult, showcasesResult] = await Promise.all([
+        ideasQuery,
+        showcasesQuery
+      ]);
       
-      if (error) throw error;
-      return data || [];
+      if (ideasResult.error) throw ideasResult.error;
+      if (showcasesResult.error) throw showcasesResult.error;
+      
+      // Combinar ambos resultados
+      return [...(ideasResult.data || []), ...(showcasesResult.data || [])];
     }
   });
 
-  // Convertir posts a formato Project
+  // Convertir posts a formato Project (ideas convertidas Y project_showcases)
   const projects: Project[] = useMemo(() => {
     return projectPosts.map((post: any) => {
+      // Check if it's a project_showcase or an idea
+      const isShowcase = post.post_type === 'project_showcase';
+      const showcase = post.project_showcases?.[0];
       const idea = post.idea || {};
-      return {
-        id: post.id,
-        title: idea.title || 'Sin título',
-        description: idea.description || post.content || '',
-        short_description: idea.description?.substring(0, 150) || '',
-        objectives: idea.expected_impact || '',
-        status: post.project_status === 'in_progress' ? 'development' : 
-                post.project_status === 'completed' ? 'completed' : 'planning',
-        category: idea.category || 'Otro',
-        technologies: idea.resources_needed || [],
-        tags: [],
-        is_open_source: false,
-        seeking_collaborators: post.project_status === 'in_progress',
-        author_id: post.user_id,
-        author: post.profiles ? {
-          id: post.profiles.id,
-          username: post.profiles.username || 'Usuario',
-          avatar_url: post.profiles.avatar_url
-        } : undefined,
-        team_members: [],
-        contact_email: '',
-        additional_links: [],
-        likes_count: 0,
-        comments_count: 0,
-        views_count: 0,
-        created_at: post.created_at,
-        updated_at: post.updated_at
-      };
+
+      if (isShowcase && showcase) {
+        // Map project_showcase data
+        return {
+          id: post.id,
+          title: showcase.project_title || 'Sin título',
+          description: showcase.project_description || post.content || '',
+          short_description: showcase.project_description?.substring(0, 150) || '',
+          objectives: showcase.achievements?.[0] || '',
+          status: showcase.project_status === 'active' ? 'active' :
+                  showcase.project_status === 'completed' ? 'completed' :
+                  showcase.project_status === 'development' ? 'development' : 'planning',
+          category: showcase.industry || 'Otro',
+          technologies: showcase.technologies_used || [],
+          tags: [],
+          image_url: showcase.images_urls?.[0],
+          github_url: showcase.github_url,
+          demo_url: showcase.demo_url,
+          documentation_url: showcase.project_url,
+          is_open_source: false,
+          seeking_collaborators: showcase.seeking_collaborators || false,
+          author_id: post.user_id,
+          author: post.profiles ? {
+            id: post.profiles.id,
+            username: post.profiles.username || 'Usuario',
+            avatar_url: post.profiles.avatar_url
+          } : undefined,
+          team_members: showcase.collaboration_roles || [],
+          contact_email: '',
+          additional_links: [],
+          likes_count: 0,
+          comments_count: 0,
+          views_count: 0,
+          created_at: post.created_at,
+          updated_at: post.updated_at
+        };
+      } else {
+        // Map idea data (converted to project)
+        return {
+          id: post.id,
+          title: idea.title || 'Sin título',
+          description: idea.description || post.content || '',
+          short_description: idea.description?.substring(0, 150) || '',
+          objectives: idea.expected_impact || '',
+          status: post.project_status === 'in_progress' ? 'development' : 
+                  post.project_status === 'completed' ? 'completed' : 'planning',
+          category: idea.category || 'Otro',
+          technologies: idea.resources_needed || [],
+          tags: [],
+          is_open_source: false,
+          seeking_collaborators: post.project_status === 'in_progress',
+          author_id: post.user_id,
+          author: post.profiles ? {
+            id: post.profiles.id,
+            username: post.profiles.username || 'Usuario',
+            avatar_url: post.profiles.avatar_url
+          } : undefined,
+          team_members: [],
+          contact_email: '',
+          additional_links: [],
+          likes_count: 0,
+          comments_count: 0,
+          views_count: 0,
+          created_at: post.created_at,
+          updated_at: post.updated_at
+        };
+      }
     });
   }, [projectPosts]);
 

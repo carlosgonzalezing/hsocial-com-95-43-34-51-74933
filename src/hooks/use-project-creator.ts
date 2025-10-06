@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { type ProjectFormData } from '@/types/project';
 import { createProject } from '@/lib/api/projects/create-project';
 
@@ -39,6 +40,7 @@ export function useProjectCreator() {
   const [formData, setFormData] = useState<ProjectFormData>(initialFormData);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const queryClient = useQueryClient();
 
   const updateFormData = (updates: Partial<ProjectFormData>) => {
     setFormData(prev => ({ ...prev, ...updates }));
@@ -52,6 +54,10 @@ export function useProjectCreator() {
     setIsSubmitting(true);
     try {
       await createProject(formData, imageFile || undefined);
+      
+      // Invalidate projects query to refresh the Projects page
+      queryClient.invalidateQueries({ queryKey: ['project-posts'] });
+      
       resetForm();
       setImageFile(null);
     } catch (error) {

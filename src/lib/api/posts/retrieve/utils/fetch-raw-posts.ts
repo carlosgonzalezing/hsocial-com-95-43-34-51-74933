@@ -15,6 +15,9 @@ export async function fetchRawPosts(userId?: string) {
         academic_events:academic_events(*)
       `);
 
+    // Exclude project_showcase posts from feed (they should only appear in Projects page)
+    query = query.neq('post_type', 'project_showcase');
+
     // Si hay un userId, solo obtener los posts de ese usuario
     if (userId) {
       query = query.eq("user_id", userId);
