@@ -54,6 +54,20 @@ export async function createProject(data: ProjectFormData, imageFile?: File) {
 
     if (projectError) throw projectError;
 
+    // Add creator as first participant
+    const { error: participantError } = await supabase
+      .from('idea_participants')
+      .insert({
+        post_id: post.id,
+        user_id: user.id,
+        profession: data.category || 'Desarrollador del proyecto'
+      });
+
+    if (participantError) {
+      console.error('Error adding creator as participant:', participantError);
+      // Don't throw, just log - the project is already created
+    }
+
     return { post, project };
   } catch (error) {
     console.error('Error creating project:', error);

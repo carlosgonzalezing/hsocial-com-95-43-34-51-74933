@@ -160,7 +160,29 @@ export default function IdeaParticipants() {
           }
         }
         
-        // 5. Set participants and finish loading
+        // 5. If still no participants, add the post creator as default participant
+        if (formattedParticipants.length === 0 && post?.user_id) {
+          console.log("No participants found, fetching creator profile:", post.user_id);
+          
+          const { data: creatorProfile, error: creatorError } = await supabase
+            .from("profiles")
+            .select("id, username, avatar_url, career")
+            .eq("id", post.user_id)
+            .single();
+            
+          if (!creatorError && creatorProfile) {
+            formattedParticipants.push({
+              user_id: creatorProfile.id,
+              username: creatorProfile.username || "Creador",
+              avatar_url: creatorProfile.avatar_url,
+              profession: "Creador del proyecto",
+              career: creatorProfile.career || "No especificado",
+              joined_at: new Date().toISOString()
+            });
+          }
+        }
+        
+        // 6. Set participants and finish loading
         console.log("Final formatted participants:", formattedParticipants);
         setParticipants(formattedParticipants);
       } catch (error) {
@@ -171,6 +193,7 @@ export default function IdeaParticipants() {
           variant: "destructive"
         });
       } finally {
+        // ALWAYS stop loading, even if there's an error
         setLoading(false);
       }
     };
