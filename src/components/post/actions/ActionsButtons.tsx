@@ -65,11 +65,11 @@ export function ActionsButtons({
           {/* Comentar */}
           <Button
             variant="ghost"
-            className="flex-1 flex items-center justify-center gap-2 py-3 text-facebook-gray-600 hover:bg-facebook-gray-100 rounded-none"
+            className="flex-1 flex items-center justify-center gap-2 py-3 text-muted-foreground hover:bg-accent/5 rounded-none font-normal"
             onClick={onComment}
           >
             <MessageCircle className="h-5 w-5" />
-            <span className="text-sm font-medium">Comentar</span>
+            <span className="text-sm">Comentar</span>
           </Button>
           
           {/* Compartir */}
@@ -77,20 +77,20 @@ export function ActionsButtons({
             <ShareOptions post={post}>
               <Button
                 variant="ghost"
-                className="flex-1 flex items-center justify-center gap-2 py-3 text-facebook-gray-600 hover:bg-facebook-gray-100 rounded-none"
+                className="flex-1 flex items-center justify-center gap-2 py-3 text-muted-foreground hover:bg-accent/5 rounded-none font-normal"
               >
                 <Share2 className="h-5 w-5" />
-                <span className="text-sm font-medium">Compartir</span>
+                <span className="text-sm">Compartir</span>
               </Button>
             </ShareOptions>
           ) : (
             <Button
               variant="ghost"
-              className="flex-1 flex items-center justify-center gap-2 py-3 text-facebook-gray-600 hover:bg-facebook-gray-100 rounded-none"
+              className="flex-1 flex items-center justify-center gap-2 py-3 text-muted-foreground hover:bg-accent/5 rounded-none font-normal"
               onClick={onShare}
             >
               <Share2 className="h-5 w-5" />
-              <span className="text-sm font-medium">Compartir</span>
+              <span className="text-sm">Compartir</span>
             </Button>
           )}
         </div>
@@ -115,11 +115,11 @@ export function ActionsButtons({
         {/* Comentar */}
         <Button
           variant="ghost"
-          className="flex-1 flex items-center justify-center gap-2 py-3 text-facebook-gray-600 hover:bg-facebook-gray-100 rounded-lg mx-1"
+          className="flex-1 flex items-center justify-center gap-2 py-3 text-muted-foreground hover:bg-accent/5 rounded-lg mx-1 font-normal"
           onClick={onComment}
         >
           <MessageCircle className="h-5 w-5" />
-          <span className="font-medium">Comentar</span>
+          <span>Comentar</span>
         </Button>
         
         {/* Compartir */}
@@ -127,20 +127,20 @@ export function ActionsButtons({
           <ShareOptions post={post}>
             <Button
               variant="ghost"
-              className="flex-1 flex items-center justify-center gap-2 py-3 text-facebook-gray-600 hover:bg-facebook-gray-100 rounded-lg mx-1"
+              className="flex-1 flex items-center justify-center gap-2 py-3 text-muted-foreground hover:bg-accent/5 rounded-lg mx-1 font-normal"
             >
               <Share2 className="h-5 w-5" />
-              <span className="font-medium">Compartir</span>
+              <span>Compartir</span>
             </Button>
           </ShareOptions>
         ) : (
           <Button
             variant="ghost"
-            className="flex-1 flex items-center justify-center gap-2 py-3 text-facebook-gray-600 hover:bg-facebook-gray-100 rounded-lg mx-1"
+            className="flex-1 flex items-center justify-center gap-2 py-3 text-muted-foreground hover:bg-accent/5 rounded-lg mx-1 font-normal"
             onClick={onShare}
           >
             <Share2 className="h-5 w-5" />
-            <span className="font-medium">Compartir</span>
+            <span>Compartir</span>
           </Button>
         )}
       </div>

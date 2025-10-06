@@ -37,7 +37,7 @@ export function PostWrapper({
       )}
       
       <Card 
-        className={`mb-0 overflow-hidden mx-0 md:mx-0 rounded-none md:rounded-lg shadow-none md:shadow-md border-t border-b md:border border-l-0 border-r-0 md:border-l md:border-r ${isHidden ? 'opacity-70' : ''} ${
+        className={`mb-6 overflow-hidden mx-0 md:mx-0 rounded-none md:rounded-xl shadow-none md:shadow-sm border border-border ${isHidden ? 'opacity-70' : ''} ${
           isIdeaPost 
             ? 'border-blue-200 dark:border-blue-700 bg-blue-50/30 dark:bg-blue-950/20' 
             : ''

@@ -24,7 +24,7 @@ export function PostActivitySummary({
   }
 
   return (
-    <div className="flex items-center justify-between px-4 py-2 text-sm text-muted-foreground border-b">
+    <div className="flex items-center justify-between px-6 py-3 text-xs text-muted-foreground/80 border-b border-border/50">
       {/* Left side - Reactions */}
       <div className="flex items-center">
         {totalReactions > 0 && (

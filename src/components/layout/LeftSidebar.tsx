@@ -126,7 +126,7 @@ export function LeftSidebar({ currentUserId }: LeftSidebarProps) {
       <Separator className="mb-4" />
 
       {/* Main Menu Items */}
-      <div className="space-y-1 mb-4">
+      <div className="space-y-2 mb-6">
         {mainMenuItems.map((item) => {
           const Icon = item.icon;
           return (
@@ -135,7 +135,7 @@ export function LeftSidebar({ currentUserId }: LeftSidebarProps) {
               to={item.path}
               onClick={item.onClick}
               className={cn(
-                "flex items-center space-x-3 p-3 rounded-lg transition-colors text-sm font-medium",
+                "flex items-center space-x-3 p-3.5 rounded-xl transition-colors text-sm font-medium",
                 item.isActive 
                   ? "bg-primary/10 text-primary"
                   : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
@@ -159,7 +159,7 @@ export function LeftSidebar({ currentUserId }: LeftSidebarProps) {
       <Separator className="mb-4" />
 
       {/* Secondary Menu Items */}
-      <div className="space-y-1">
+      <div className="space-y-2">
         {secondaryMenuItems.map((item) => {
           const Icon = item.icon;
           return (
@@ -168,7 +168,7 @@ export function LeftSidebar({ currentUserId }: LeftSidebarProps) {
               to={item.path}
               onClick={item.onClick}
               className={cn(
-                "flex items-center space-x-3 p-3 rounded-lg transition-colors text-sm",
+                "flex items-center space-x-3 p-3.5 rounded-xl transition-colors text-sm",
                 item.isActive 
                   ? "bg-primary/10 text-primary font-medium"
                   : "text-muted-foreground hover:text-foreground hover:bg-muted/50"

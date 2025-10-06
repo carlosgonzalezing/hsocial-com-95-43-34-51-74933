@@ -74,7 +74,7 @@ export function PostContent({ post, postId }: PostContentProps) {
             className={
               isStyledTextPost 
                 ? "relative z-10 text-xl font-semibold text-white text-center py-16 px-4 md:px-6 whitespace-pre-wrap break-words"
-                : "text-sm whitespace-pre-wrap break-words mb-4 post-content px-4 md:px-0"
+                : "text-[15px] leading-relaxed whitespace-pre-wrap break-words mb-4 post-content px-4 md:px-0 text-foreground"
             }
           />
         </div>

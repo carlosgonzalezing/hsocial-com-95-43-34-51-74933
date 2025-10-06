@@ -127,7 +127,7 @@ export function PostHeader({
     return (
       <Badge
         variant="outline"
-        className="text-xs flex items-center gap-1 bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300 ml-1"
+        className="text-xs flex items-center gap-1 bg-muted/50 text-muted-foreground border-0 ml-1"
       >
         {authorCareer}
       </Badge>
@@ -229,7 +229,7 @@ export function PostHeader({
           <div className="flex items-center mt-0.5">
             {renderCareerBadge()}
           </div>
-          <div className="text-xs text-muted-foreground mt-1">
+          <div className="text-xs text-muted-foreground/70 mt-1 font-normal">
             {formatDistanceToNow(new Date(post.created_at), { 
               addSuffix: true, 
               locale: es 
