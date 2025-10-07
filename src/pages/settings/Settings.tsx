@@ -18,7 +18,11 @@ export default function Settings() {
     navigate('/auth');
   };
 
+  // Reorganizada la jerarquía interna del menú de ajustes
+  // Orden lógico: Cuenta → Seguridad → Notificaciones → Personalización → Privacidad → Estadísticas
+  // Eliminada "Popularidad" (no es una configuración, es una feature social)
   const settingsCategories = [
+    // Sección 1: Información de cuenta básica
     {
       title: "Cuenta",
       description: "Administra tu información personal y configuración de la cuenta",
@@ -26,27 +30,7 @@ export default function Settings() {
       path: "/settings/account",
       color: "text-blue-600"
     },
-    {
-      title: "Personalización",
-      description: "Configura tu foto de perfil, banner y apariencia",
-      icon: Image,
-      path: "/settings/personalization",
-      color: "text-indigo-600"
-    },
-    {
-      title: "Mis Estadísticas",
-      description: "Ve tus corazones, vistas de perfil y nivel social",
-      icon: BarChart3,
-      path: "/settings/statistics",
-      color: "text-emerald-600"
-    },
-    {
-      title: "Privacidad",
-      description: "Controla quién puede ver tu contenido y actividad",
-      icon: Shield,
-      path: "/settings/privacy",
-      color: "text-green-600"
-    },
+    // Sección 2: Seguridad y acceso
     {
       title: "Contraseña y seguridad",
       description: "Protege tu cuenta con configuración de seguridad avanzada",
@@ -54,6 +38,7 @@ export default function Settings() {
       path: "/settings/security",
       color: "text-orange-600"
     },
+    // Sección 3: Comunicación
     {
       title: "Notificaciones",
       description: "Personaliza cómo y cuándo recibes notificaciones",
@@ -61,21 +46,40 @@ export default function Settings() {
       path: "/settings/notifications",
       color: "text-purple-600"
     },
+    // Sección 4: Apariencia y perfil (incluye tema, que se muestra por separado en UI)
     {
-      title: "Popularidad",
-      description: "Ve el ranking de usuarios más populares",
-      icon: Heart,
-      path: "/popularity",
-      color: "text-pink-600"
+      title: "Personalización",
+      description: "Configura tu foto de perfil, banner y apariencia",
+      icon: Image,
+      path: "/settings/personalization",
+      color: "text-indigo-600"
+    },
+    // Sección 5: Control de privacidad
+    {
+      title: "Privacidad",
+      description: "Controla quién puede ver tu contenido y actividad",
+      icon: Shield,
+      path: "/settings/privacy",
+      color: "text-green-600"
+    },
+    // Sección 6: Información y análisis (último, es más informativo que configuración)
+    {
+      title: "Mis Estadísticas",
+      description: "Ve tus corazones, vistas de perfil y nivel social",
+      icon: BarChart3,
+      path: "/settings/statistics",
+      color: "text-emerald-600"
     }
   ];
 
+  // Opciones adicionales: acciones que no son configuraciones
   const additionalOptions = [
+    // TODO: Implementar funcionalidad del centro de ayuda
     {
       title: "Centro de ayuda",
       description: "Obtén ayuda y soporte técnico",
       icon: HelpCircle,
-      action: () => {},
+      action: () => {}, // Acción pendiente de implementación
       color: "text-gray-600"
     },
     {
@@ -151,7 +155,7 @@ export default function Settings() {
             </div>
           </div>
 
-          {/* Theme Toggle */}
+          {/* Theme Toggle - Conceptualmente parte de Personalización, pero mostrado aquí por accesibilidad */}
           <div>
             {!isMobile && (
               <h2 className="text-lg font-semibold mb-4 text-foreground">Tema</h2>
