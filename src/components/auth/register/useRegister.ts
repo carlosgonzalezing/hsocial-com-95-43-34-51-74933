@@ -37,7 +37,8 @@ export function useRegister(setLoading: (loading: boolean) => void, sendVerifica
             institution_name: institutionName,
             academic_role: academicRole || null,
           },
-          emailRedirectTo: window.location.origin,
+          // Redirigir a /auth para que el token de verificación sea procesado correctamente
+          emailRedirectTo: `${window.location.origin}/auth`,
         },
       });
       

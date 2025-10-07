@@ -33,8 +33,8 @@ export function PasswordResetDialog({ open, onOpenChange, email: initialEmail }:
     setLoading(true);
     
     try {
-      // Usar la URL específica del dominio de producción
-      const redirectUrl = "https://hsocial.space/password-reset";
+      // Usar la URL dinámica para funcionar en todos los entornos
+      const redirectUrl = `${window.location.origin}/password-reset`;
       
       console.log('🔄 Enviando email de restablecimiento:', { email, redirectUrl });
       console.log('🔍 Using redirect URL:', redirectUrl);

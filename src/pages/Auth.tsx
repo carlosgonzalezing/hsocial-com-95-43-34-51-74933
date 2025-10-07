@@ -21,9 +21,29 @@ export default function Auth() {
   // Handle OAuth redirects and auth state changes
   useAuthRedirect();
 
-  // Check for verification success parameter
+  // Check for verification success - either from query param or from hash token
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
+    const hashFragment = window.location.hash;
+    
+    // Check if there's a signup verification token in the hash
+    if (hashFragment) {
+      const hashParams = new URLSearchParams(hashFragment.substring(1));
+      const type = hashParams.get('type');
+      const accessToken = hashParams.get('access_token');
+      
+      // If it's a signup verification token, show success message
+      if (type === 'signup' && accessToken) {
+        console.log('✅ Auth - Signup verification detected in hash');
+        setShowVerificationSuccess(true);
+        setAuthMode('login');
+        // Clean the hash from URL
+        window.history.replaceState(null, '', window.location.pathname);
+        return;
+      }
+    }
+    
+    // Also check for legacy query param
     if (urlParams.get('verified') === 'true') {
       setShowVerificationSuccess(true);
       setAuthMode('login');
