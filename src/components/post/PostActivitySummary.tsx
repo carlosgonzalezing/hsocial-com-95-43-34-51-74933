@@ -8,6 +8,7 @@ interface PostActivitySummaryProps {
   reactionsByType: Record<string, number>;
   commentsCount: number;
   sharesCount: number;
+  onCommentsClick?: () => void;
 }
 
 export function PostActivitySummary({
@@ -15,6 +16,7 @@ export function PostActivitySummary({
   reactionsByType,
   commentsCount,
   sharesCount,
+  onCommentsClick,
 }: PostActivitySummaryProps) {
   const totalReactions = Object.values(reactionsByType).reduce((sum, count) => sum + count, 0);
   const hasActivity = totalReactions > 0 || commentsCount > 0 || sharesCount > 0;
@@ -38,7 +40,10 @@ export function PostActivitySummary({
       {/* Right side - Comments and Shares */}
       <div className="flex items-center gap-4">
         {commentsCount > 0 && (
-          <div className="flex items-center gap-1 cursor-pointer hover:underline">
+          <div 
+            className="flex items-center gap-1 cursor-pointer hover:underline"
+            onClick={onCommentsClick}
+          >
             <span>{commentsCount} {commentsCount === 1 ? 'comentario' : 'comentarios'}</span>
           </div>
         )}

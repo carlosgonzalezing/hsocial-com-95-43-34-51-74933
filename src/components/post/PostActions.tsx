@@ -113,6 +113,7 @@ export function PostActions({
         reactionsByType={reactionsByType}
         commentsCount={post.comments_count || 0}
         sharesCount={sharesCount}
+        onCommentsClick={onCommentsClick}
       />
       
       {/* Standard action buttons (like, comments, share) */}
