@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
@@ -79,9 +78,6 @@ export function ProjectModal({ project, open, onOpenChange }: ProjectModalProps)
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold">{project.title}</DialogTitle>
-          <DialogDescription>
-            Detalles completos del proyecto y colaboradores
-          </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-6">
