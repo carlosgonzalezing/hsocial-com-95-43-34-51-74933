@@ -1,6 +1,5 @@
 import React from "react";
 import { ReactionSummary } from "./reactions/ReactionSummary";
-import { MessageCircle, Share2 } from "lucide-react";
 import { Post } from "@/types/post";
 
 interface PostActivitySummaryProps {
@@ -24,34 +23,31 @@ export function PostActivitySummary({
   if (!hasActivity) {
     return null;
   }
-  
-  // Si los datos están cargando, usar valores optimistas desde el cache
-  const isOptimisticData = post.user_reaction && totalReactions === 0;
 
   return (
-    <div className="flex items-center justify-between px-6 py-3 text-xs text-muted-foreground/80 border-b border-border/50">
-      {/* Left side - Reactions */}
+    <div className="flex items-center justify-between px-6 py-3 text-sm text-muted-foreground border-b border-border/50">
+      {/* Left side - Reactions (estilo Facebook: "Nombre y X personas más") */}
       <div className="flex items-center">
         {totalReactions > 0 && (
           <ReactionSummary reactions={reactionsByType} postId={post.id} />
         )}
       </div>
 
-      {/* Right side - Comments and Shares */}
-      <div className="flex items-center gap-4">
+      {/* Right side - Comments and Shares (estilo Facebook) */}
+      <div className="flex items-center gap-3 text-muted-foreground/80">
         {commentsCount > 0 && (
-          <div 
-            className="flex items-center gap-1 cursor-pointer hover:underline"
+          <button
+            className="hover:underline transition-all"
             onClick={onCommentsClick}
           >
-            <span>{commentsCount} {commentsCount === 1 ? 'comentario' : 'comentarios'}</span>
-          </div>
+            {commentsCount} {commentsCount === 1 ? 'comentario' : 'comentarios'}
+          </button>
         )}
         
         {sharesCount > 0 && (
-          <div className="flex items-center gap-1 cursor-pointer hover:underline">
-            <span>{sharesCount} {sharesCount === 1 ? 'vez compartida' : 'veces compartida'}</span>
-          </div>
+          <span className="hover:underline cursor-pointer transition-all">
+            {sharesCount} {sharesCount === 1 ? 'vez compartida' : 'veces compartida'}
+          </span>
         )}
       </div>
     </div>
