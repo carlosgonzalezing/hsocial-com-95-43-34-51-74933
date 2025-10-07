@@ -7,8 +7,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Share2, Link2, Users } from "lucide-react";
+import { Share2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
@@ -96,44 +95,6 @@ export function ShareModal({ isOpen, onClose, post }: ShareModalProps) {
     }
   };
 
-  const handleCopyLink = async () => {
-    try {
-      const url = `${window.location.origin}/post/${post.id}`;
-      await navigator.clipboard.writeText(url);
-      
-      // Record the share
-      await sharePost(post.id, 'link');
-      
-      toast({
-        title: "Enlace copiado",
-        description: "El enlace ha sido copiado al portapapeles",
-      });
-      onClose();
-    } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "No se pudo copiar el enlace",
-      });
-    }
-  };
-
-  const handleNativeShare = async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: "Compartir publicación",
-          text: post.content || "",
-          url: `${window.location.origin}/post/${post.id}`,
-        });
-        
-        // Record the share
-        await sharePost(post.id, 'external');
-      } catch (error) {
-        console.error("Error sharing:", error);
-      }
-    }
-  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -146,87 +107,21 @@ export function ShareModal({ isOpen, onClose, post }: ShareModalProps) {
         </DialogHeader>
 
         <div className="space-y-4">
-          {/* Post Preview */}
-          <div className="border rounded-lg p-3 bg-muted/50">
-            <div className="flex items-center gap-2 mb-2">
-              <Avatar className="h-6 w-6">
-                <AvatarImage src={post.profiles?.avatar_url || ""} />
-                <AvatarFallback>
-                  {post.profiles?.username?.[0]?.toUpperCase() || "U"}
-                </AvatarFallback>
-              </Avatar>
-              <span className="text-sm font-medium">
-                {post.profiles?.username || "Usuario"}
-              </span>
-            </div>
-            <p className="text-sm text-muted-foreground line-clamp-3">
-              {post.content}
-            </p>
-          </div>
+          <Textarea
+            value={shareComment}
+            onChange={(e) => setShareComment(e.target.value)}
+            placeholder="¿Qué piensas sobre esto?"
+            rows={4}
+            className="resize-none"
+          />
 
-          {/* Share Comment */}
-          <div>
-            <label className="text-sm font-medium">
-              Añade un comentario (opcional)
-            </label>
-            <Textarea
-              value={shareComment}
-              onChange={(e) => setShareComment(e.target.value)}
-              placeholder="¿Qué piensas sobre esto?"
-              className="mt-1"
-              rows={3}
-            />
-          </div>
-
-          {/* Share Options */}
-          <div className="flex flex-col gap-2">
-            <Button
-              onClick={handleShareToProfile}
-              disabled={isSharing}
-              className="justify-start"
-              variant="ghost"
-            >
-              <Users className="h-4 w-4 mr-2" />
-              Compartir en mi perfil
-            </Button>
-
-            <Button
-              onClick={handleCopyLink}
-              variant="ghost"
-              className="justify-start"
-            >
-              <Link2 className="h-4 w-4 mr-2" />
-              Copiar enlace
-            </Button>
-
-            {navigator.share && (
-              <Button
-                onClick={handleNativeShare}
-                variant="ghost"
-                className="justify-start"
-              >
-                <Share2 className="h-4 w-4 mr-2" />
-                Compartir con...
-              </Button>
-            )}
-          </div>
-
-          <div className="flex gap-2 pt-2">
-            <Button
-              onClick={onClose}
-              variant="outline"
-              className="flex-1"
-            >
-              Cancelar
-            </Button>
-            <Button
-              onClick={handleShareToProfile}
-              disabled={isSharing}
-              className="flex-1"
-            >
-              {isSharing ? "Compartiendo..." : "Compartir"}
-            </Button>
-          </div>
+          <Button
+            onClick={handleShareToProfile}
+            disabled={isSharing}
+            className="w-full"
+          >
+            {isSharing ? "Compartiendo..." : "Compartir"}
+          </Button>
         </div>
       </DialogContent>
     </Dialog>
