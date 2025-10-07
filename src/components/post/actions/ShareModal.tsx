@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -143,6 +144,9 @@ export function ShareModal({ isOpen, onClose, post }: ShareModalProps) {
             <Share2 className="h-5 w-5" />
             Compartir publicación
           </DialogTitle>
+          <DialogDescription>
+            Comparte esta publicación en tu perfil o copia el enlace
+          </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">
