@@ -53,31 +53,50 @@ export async function getMultiplePostSharesCounts(postIds: string[]): Promise<Re
 }
 
 export async function sharePost(postId: string, shareType: 'profile' | 'link' | 'external' = 'profile', shareComment?: string): Promise<boolean> {
+  console.log('🔄 [sharePost] Iniciando registro de compartir:', { postId, shareType, hasComment: !!shareComment });
+  
   try {
-    const { data: sessionData } = await supabase.auth.getSession();
+    // 1. Obtener sesión
+    console.log('🔍 [sharePost] Obteniendo sesión de usuario...');
+    const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+    
+    if (sessionError) {
+      console.error('❌ [sharePost] Error obteniendo sesión:', sessionError);
+      return false;
+    }
+    
     const userId = sessionData.session?.user.id;
+    console.log('👤 [sharePost] Usuario ID:', userId || 'NO ENCONTRADO');
     
     if (!userId) {
-      throw new Error('User not authenticated');
-    }
-
-    const { error } = await supabase
-      .from('post_shares')
-      .insert({
-        post_id: postId,
-        user_id: userId,
-        share_type: shareType,
-        share_comment: shareComment
-      });
-
-    if (error) {
-      console.error('Error sharing post:', error);
+      console.error('❌ [sharePost] Usuario no autenticado');
       return false;
     }
 
+    // 2. Insertar en post_shares
+    console.log('📝 [sharePost] Insertando en post_shares...');
+    const shareData = {
+      post_id: postId,
+      user_id: userId,
+      share_type: shareType,
+      share_comment: shareComment || null
+    };
+    
+    console.log('📤 [sharePost] Datos a insertar:', shareData);
+    const { error: insertError } = await supabase
+      .from('post_shares')
+      .insert(shareData);
+
+    if (insertError) {
+      console.error('❌ [sharePost] Error insertando en post_shares:', insertError);
+      return false;
+    }
+
+    console.log('✅ [sharePost] Compartir registrado exitosamente');
     return true;
+    
   } catch (error) {
-    console.error('Error in sharePost:', error);
+    console.error('❌ [sharePost] Error inesperado:', error);
     return false;
   }
 }

@@ -1683,6 +1683,7 @@ export type Database = {
           poll: Json | null
           post_type: string | null
           project_status: string | null
+          shared_post_id: string | null
           updated_at: string
           user_id: string
           visibility: Database["public"]["Enums"]["post_visibility"]
@@ -1702,6 +1703,7 @@ export type Database = {
           poll?: Json | null
           post_type?: string | null
           project_status?: string | null
+          shared_post_id?: string | null
           updated_at?: string
           user_id: string
           visibility?: Database["public"]["Enums"]["post_visibility"]
@@ -1721,11 +1723,19 @@ export type Database = {
           poll?: Json | null
           post_type?: string | null
           project_status?: string | null
+          shared_post_id?: string | null
           updated_at?: string
           user_id?: string
           visibility?: Database["public"]["Enums"]["post_visibility"]
         }
         Relationships: [
+          {
+            foreignKeyName: "posts_shared_post_id_fkey"
+            columns: ["shared_post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "posts_user_id_fkey"
             columns: ["user_id"]
