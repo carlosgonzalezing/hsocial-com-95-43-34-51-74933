@@ -6,6 +6,7 @@ import { ImageModal } from "@/components/post/ImageModal";
 import { IdeaDisplay } from "./idea/IdeaDisplay";
 import { PostImage } from "@/components/ui/optimized-image";
 import { MentionsText } from "./MentionsText";
+import { EventCard } from "@/components/events/EventCard";
 
 interface SharedPostContentProps {
   post: Post;
@@ -21,6 +22,24 @@ export function SharedPostContent({ post }: SharedPostContentProps) {
         <IdeaDisplay 
           post={post}
           showHeader={true}
+        />
+      </div>
+    );
+  }
+  
+  // Si el post compartido es un evento académico
+  if (post && post.event) {
+    return (
+      <div className="space-y-2">
+        <EventCard 
+          title={post.event.title}
+          description={post.event.description}
+          startDate={post.event.start_date}
+          endDate={post.event.end_date}
+          location={post.event.location}
+          isVirtual={post.event.location_type === 'virtual'}
+          maxAttendees={post.event.max_attendees}
+          category={post.event.category}
         />
       </div>
     );

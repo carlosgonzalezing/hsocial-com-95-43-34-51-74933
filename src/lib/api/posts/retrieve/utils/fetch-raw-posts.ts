@@ -12,7 +12,13 @@ export async function fetchRawPosts(userId?: string) {
         profiles:profiles(*),
         comments:comments(count),
         post_reports:post_reports(count),
-        academic_events:academic_events(*)
+        academic_events:academic_events(*),
+        shared_post:posts!shared_post_id(
+          *,
+          profiles:profiles(*),
+          comments:comments(count),
+          academic_events:academic_events(*)
+        )
       `);
 
     // Exclude project_showcase posts from feed (they should only appear in Projects page)
@@ -32,7 +38,16 @@ export async function fetchRawPosts(userId?: string) {
       throw error;
     }
     
-    console.log('✅ fetchRawPosts: Success', { count: data?.length || 0 });
+    const sharedPostsCount = data?.filter(p => p.shared_post_id)?.length || 0;
+    console.log('✅ fetchRawPosts: Success', { 
+      count: data?.length || 0,
+      sharedPostsCount,
+      sharedPostsData: data?.filter(p => p.shared_post_id).map(p => ({
+        id: p.id,
+        has_shared_post_data: !!p.shared_post,
+        shared_post_id: p.shared_post_id
+      }))
+    });
     return data || [];
   } catch (error) {
     console.error("❌ Error in fetchRawPosts:", error);
