@@ -50,7 +50,7 @@ export function PostActivitySummary({
         
         {sharesCount > 0 && (
           <div className="flex items-center gap-1 cursor-pointer hover:underline">
-            <span>{sharesCount} {sharesCount === 1 ? 'vez compartido' : 'veces compartido'}</span>
+            <span>{sharesCount} {sharesCount === 1 ? 'vez compartida' : 'veces compartida'}</span>
           </div>
         )}
       </div>

@@ -46,3 +46,36 @@ export async function getReactionsForPosts(postIds: string[]) {
     return {};
   }
 }
+
+export async function getReactionsWithProfiles(postId: string) {
+  try {
+    const { data, error } = await supabase
+      .from("reactions")
+      .select(`
+        id,
+        reaction_type,
+        created_at,
+        user_id,
+        profiles (
+          username,
+          avatar_url
+        )
+      `)
+      .eq("post_id", postId)
+      .order("created_at", { ascending: false })
+      .limit(3);
+
+    if (error) throw error;
+    
+    return (data || []).map((item: any) => ({
+      id: item.id,
+      reaction_type: item.reaction_type,
+      username: item.profiles?.username || "Usuario",
+      avatar_url: item.profiles?.avatar_url,
+      user_id: item.user_id
+    }));
+  } catch (error) {
+    console.error("Error fetching reactions with profiles:", error);
+    return [];
+  }
+}
