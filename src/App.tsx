@@ -34,6 +34,7 @@ const PrivacySettings = React.lazy(() => import("@/pages/settings/PrivacySetting
 const SecuritySettings = React.lazy(() => import("@/pages/settings/SecuritySettings"));
 const NotificationSettings = React.lazy(() => import("@/pages/NotificationSettings"));
 const StatisticsSettings = React.lazy(() => import("@/pages/settings/StatisticsSettings"));
+const AccessibilitySettings = React.lazy(() => import("@/pages/settings/AccessibilitySettings"));
 const NotFound = React.lazy(() => import("@/pages/NotFound"));
 const IdeaParticipants = React.lazy(() => import("@/pages/IdeaParticipants"));
 
@@ -177,6 +178,13 @@ const App = () => {
                 <AuthGuard>
                   <Suspense fallback={<LoadingSpinner />}>
                     <StatisticsSettings />
+                  </Suspense>
+                </AuthGuard>
+              } />
+              <Route path="/settings/accessibility" element={
+                <AuthGuard>
+                  <Suspense fallback={<LoadingSpinner />}>
+                    <AccessibilitySettings />
                   </Suspense>
                 </AuthGuard>
               } />

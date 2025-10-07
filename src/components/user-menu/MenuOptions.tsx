@@ -1,36 +1,19 @@
 import { Button } from "@/components/ui/button";
 import { 
-  Heart, 
-  Shield, 
-  UserCog, 
-  Lock, 
-  Mail, 
-  Phone, 
   LogOut,
   Moon,
-  Sun,
-  UserPlus,
-  Crown,
-  Palette,
-  Users,
   Settings,
   ChevronRight,
-  Bookmark,
-  Clock,
-  Store,
-  Calendar,
   HelpCircle,
-  Bot,
-  Camera,
-  Building
+  MessageSquare,
+  Monitor
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useTheme } from "next-themes";
-import { Switch } from "@/components/ui/switch";
-import { useState } from "react";
 import { Separator } from "@/components/ui/separator";
+import { Users } from "lucide-react";
 
 interface MenuOptionsProps {
   userId: string | null;
@@ -43,8 +26,6 @@ export function MenuOptions({ userId, onClose, onCopyProfileLink }: MenuOptionsP
   const { toast } = useToast();
   const { theme, setTheme } = useTheme();
   
-  const [isCreateGroupOpen, setIsCreateGroupOpen] = useState(false);
-
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) {
@@ -73,75 +54,119 @@ export function MenuOptions({ userId, onClose, onCopyProfileLink }: MenuOptionsP
   };
 
   return (
-    <div className="px-4 bg-background space-y-1">
-      {/* HSocial AI Section */}
-      <Button
-        variant="ghost"
-        className="w-full justify-start h-12 px-3 rounded-lg hover:bg-facebook-gray-100"
-        onClick={() => toast({
-          title: "HSocial AI",
-          description: "Próximamente disponible"
-        })}
-      >
-        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center mr-3">
-          <Bot className="h-4 w-4 text-white" />
-        </div>
-        <span className="font-medium">HSocial AI</span>
-        <span className="ml-auto text-xs text-muted-foreground">Próximamente</span>
-      </Button>
-      
-      <Separator className="my-2" />
-      
-      {/* Tus accesos directos */}
-      <div className="py-2">
-        <h3 className="text-sm font-semibold text-facebook-gray-600 mb-2 px-3">Tus accesos directos</h3>
-        
+    <div className="px-2 pb-4 bg-background">
+      {/* Ver todos los perfiles - Destacado */}
+      <div className="px-2 py-3">
+        <Button
+          variant="secondary"
+          className="w-full justify-start h-11 px-3 rounded-lg font-semibold"
+          onClick={() => handleNavigate(`/profile/${userId}`)}
+        >
+          <Users className="h-5 w-5 mr-3" />
+          <span>Ver todos los perfiles</span>
+        </Button>
       </div>
       
+      <Separator className="my-1" />
       
-      {/* Settings and Support */}
-      <div className="py-2">
+      {/* Configuración y privacidad */}
+      <div className="py-1">
         <Button
           variant="ghost"
-          className="w-full justify-start h-12 px-3 rounded-lg hover:bg-facebook-gray-100"
+          className="w-full justify-between h-14 px-3 rounded-lg hover:bg-accent"
           onClick={() => handleNavigate("/settings")}
         >
-          <Settings className="h-5 w-5 mr-3 text-facebook-gray-600" />
-          <span>Configuración y privacidad</span>
+          <div className="flex items-center">
+            <div className="w-9 h-9 rounded-full bg-muted flex items-center justify-center mr-3">
+              <Settings className="h-5 w-5" />
+            </div>
+            <span className="font-medium">Configuración y privacidad</span>
+          </div>
+          <ChevronRight className="h-5 w-5 text-muted-foreground" />
         </Button>
         
-        
-        {/* Dark Mode Toggle */}
-        <div className="flex items-center justify-between h-12 px-3 rounded-lg hover:bg-facebook-gray-100 cursor-pointer">
-          <div className="flex items-center">
-            {theme === "dark" ? (
-              <Moon className="h-5 w-5 mr-3 text-facebook-gray-600" />
-            ) : (
-              <Sun className="h-5 w-5 mr-3 text-facebook-gray-600" />
-            )}
-            <span>Modo oscuro</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-muted-foreground">
-              {theme === "dark" ? "Activado" : "Desactivado"}
-            </span>
-            <Switch 
-              checked={theme === "dark"}
-              onCheckedChange={toggleTheme}
-            />
-          </div>
-        </div>
-        
+        {/* Ayuda y asistencia */}
         <Button
           variant="ghost"
-          className="w-full justify-start h-12 px-3 rounded-lg hover:bg-facebook-gray-100 text-facebook-gray-600"
+          className="w-full justify-between h-14 px-3 rounded-lg hover:bg-accent"
+          onClick={() => toast({
+            title: "Ayuda y asistencia",
+            description: "Centro de ayuda próximamente disponible"
+          })}
+        >
+          <div className="flex items-center">
+            <div className="w-9 h-9 rounded-full bg-muted flex items-center justify-center mr-3">
+              <HelpCircle className="h-5 w-5" />
+            </div>
+            <span className="font-medium">Ayuda y asistencia</span>
+          </div>
+          <ChevronRight className="h-5 w-5 text-muted-foreground" />
+        </Button>
+        
+        {/* Pantalla y accesibilidad */}
+        <Button
+          variant="ghost"
+          className="w-full justify-between h-14 px-3 rounded-lg hover:bg-accent"
+          onClick={() => handleNavigate("/settings/accessibility")}
+        >
+          <div className="flex items-center">
+            <div className="w-9 h-9 rounded-full bg-muted flex items-center justify-center mr-3">
+              <Moon className="h-5 w-5" />
+            </div>
+            <span className="font-medium">Pantalla y accesibilidad</span>
+          </div>
+          <ChevronRight className="h-5 w-5 text-muted-foreground" />
+        </Button>
+        
+        {/* Enviar comentarios */}
+        <Button
+          variant="ghost"
+          className="w-full justify-between h-14 px-3 rounded-lg hover:bg-accent"
+          onClick={() => toast({
+            title: "Enviar comentarios",
+            description: "Función de comentarios próximamente disponible"
+          })}
+        >
+          <div className="flex items-center">
+            <div className="w-9 h-9 rounded-full bg-muted flex items-center justify-center mr-3">
+              <MessageSquare className="h-5 w-5" />
+            </div>
+            <div className="flex flex-col items-start">
+              <span className="font-medium">Enviar comentarios</span>
+              <span className="text-xs text-muted-foreground">CTRL B</span>
+            </div>
+          </div>
+        </Button>
+        
+        {/* Cerrar sesión */}
+        <Button
+          variant="ghost"
+          className="w-full justify-start h-14 px-3 rounded-lg hover:bg-accent"
           onClick={handleLogout}
         >
-          <LogOut className="h-5 w-5 mr-3" />
-          <span>Cerrar sesión</span>
+          <div className="w-9 h-9 rounded-full bg-muted flex items-center justify-center mr-3">
+            <LogOut className="h-5 w-5" />
+          </div>
+          <span className="font-medium">Cerrar sesión</span>
         </Button>
       </div>
-
+      
+      {/* Footer Links */}
+      <div className="px-3 py-4 mt-2">
+        <div className="flex flex-wrap gap-1 text-xs text-muted-foreground">
+          <button className="hover:underline" onClick={() => handleNavigate("/settings/privacy")}>Privacidad</button>
+          <span>·</span>
+          <button className="hover:underline" onClick={() => toast({ title: "Condiciones", description: "Próximamente" })}>Condiciones</button>
+          <span>·</span>
+          <button className="hover:underline" onClick={() => toast({ title: "Publicidad", description: "Próximamente" })}>Publicidad</button>
+          <span>·</span>
+          <button className="hover:underline" onClick={() => toast({ title: "Opciones de anuncios", description: "Próximamente" })}>Opciones de anuncios</button>
+          <span>·</span>
+          <button className="hover:underline" onClick={() => toast({ title: "Cookies", description: "Próximamente" })}>Cookies</button>
+          <span>·</span>
+          <button className="hover:underline" onClick={() => toast({ title: "Más", description: "Próximamente" })}>Más</button>
+        </div>
+      </div>
     </div>
   );
 }
