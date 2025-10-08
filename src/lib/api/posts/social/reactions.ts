@@ -49,6 +49,28 @@ export async function addReaction(postId: string, reactionType: ReactionType = '
       });
 
     if (insertError) throw insertError;
+
+    // Get post author to send notification
+    const { data: post } = await supabase
+      .from("posts")
+      .select("user_id")
+      .eq("id", postId)
+      .single();
+
+    // Create notification for post author (don't notify yourself)
+    if (post && post.user_id !== user.id) {
+      await supabase
+        .from("notifications")
+        .insert({
+          type: "post_like",
+          sender_id: user.id,
+          receiver_id: post.user_id,
+          post_id: postId,
+          message: "reaccionó a tu publicación",
+          read: false
+        });
+    }
+
     return { success: true, action: "added" };
   } catch (error) {
     console.error("Error adding reaction:", error);

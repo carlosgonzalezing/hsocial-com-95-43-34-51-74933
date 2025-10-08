@@ -41,6 +41,21 @@ export function useNavigation() {
   useEffect(() => {
     if (!currentUserId) return;
 
+    // Load initial unread notifications count
+    const loadUnreadCount = async () => {
+      const { count } = await supabase
+        .from("notifications")
+        .select("*", { count: 'exact', head: true })
+        .eq("receiver_id", currentUserId)
+        .eq("read", false);
+      
+      if (count !== null) {
+        setUnreadNotifications(count);
+      }
+    };
+
+    loadUnreadCount();
+
     // Set up notifications subscription
     const notificationsPromise = getOrCreateChannel("notifications", (channel) => {
       channel.on(
@@ -165,8 +180,17 @@ export function useNavigation() {
     }
   };
 
-  const handleNotificationClick = () => {
+  const handleNotificationClick = async () => {
     setUnreadNotifications(0);
+    
+    // Mark all notifications as read when clicking on notifications icon
+    if (currentUserId) {
+      await supabase
+        .from("notifications")
+        .update({ read: true })
+        .eq("receiver_id", currentUserId)
+        .eq("read", false);
+    }
   };
 
   return {

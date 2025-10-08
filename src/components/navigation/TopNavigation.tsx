@@ -194,8 +194,16 @@ export function TopNavigation({ pendingRequestsCount }: TopNavigationProps) {
           </Link>
 
           {/* Notifications */}
-          <Link to="/notifications" className="flex-1 flex justify-center">
-            <Button variant="ghost" size="icon" className="h-10 w-10 relative">
+          <div className="flex-1 flex justify-center">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="h-10 w-10 relative"
+              onClick={() => {
+                handleNotificationClick();
+                navigate("/notifications");
+              }}
+            >
               <Bell className={`h-6 w-6 ${location.pathname === '/notifications' ? 'text-facebook-blue' : 'text-facebook-gray-600'}`} />
               {unreadNotifications > 0 && (
                 <Badge 
@@ -206,7 +214,7 @@ export function TopNavigation({ pendingRequestsCount }: TopNavigationProps) {
                 </Badge>
               )}
             </Button>
-          </Link>
+          </div>
 
           {/* Menu */}
           <div className="flex-1 flex justify-center">
@@ -333,7 +341,10 @@ export function TopNavigation({ pendingRequestsCount }: TopNavigationProps) {
                 variant="ghost"
                 size="icon"
                 className="h-10 w-10 rounded-full bg-muted hover:bg-muted/80 hover:scale-105 transition-all relative"
-                onClick={() => navigate("/notifications")}
+                onClick={() => {
+                  handleNotificationClick();
+                  navigate("/notifications");
+                }}
                 title="Notificaciones"
               >
                 <Bell className="h-5 w-5" />

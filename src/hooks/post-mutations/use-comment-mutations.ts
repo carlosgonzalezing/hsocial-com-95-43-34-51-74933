@@ -26,6 +26,27 @@ export function useCommentMutations(postId: string) {
         });
 
       if (error) throw error;
+
+      // Get post author to send notification
+      const { data: post } = await supabase
+        .from("posts")
+        .select("user_id")
+        .eq("id", postId)
+        .single();
+
+      // Create notification for post author (don't notify yourself)
+      if (post && post.user_id !== currentSession.user.id) {
+        await supabase
+          .from("notifications")
+          .insert({
+            type: "post_comment",
+            sender_id: currentSession.user.id,
+            receiver_id: post.user_id,
+            post_id: postId,
+            message: "comentó en tu publicación",
+            read: false
+          });
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["comments", postId] });
