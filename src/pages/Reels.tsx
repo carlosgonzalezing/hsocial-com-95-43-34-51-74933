@@ -1,6 +1,6 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Layout } from '@/components/layout';
+import { FacebookLayout } from '@/components/layout/FacebookLayout';
 import { ReelsInfiniteViewer } from '@/components/reels/ReelsInfiniteViewer';
 import { useReelsFeed } from '@/hooks/reels/use-reels-feed';
 
@@ -14,7 +14,7 @@ export default function Reels() {
   } = useReelsFeed();
 
   return (
-    <Layout>
+    <FacebookLayout>
       <div className="min-h-screen bg-background">
         <Helmet>
           <title>Reels - HSocial</title>
@@ -58,6 +58,6 @@ export default function Reels() {
           </div>
         )}
       </div>
-    </Layout>
+    </FacebookLayout>
   );
 }
