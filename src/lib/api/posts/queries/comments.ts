@@ -15,7 +15,7 @@ export async function fetchPostComments(postId: string) {
         )
       `)
       .eq("post_id", postId)
-      .order("created_at", { ascending: false });
+      .order("created_at", { ascending: true });
 
     if (error) {
       throw error;
