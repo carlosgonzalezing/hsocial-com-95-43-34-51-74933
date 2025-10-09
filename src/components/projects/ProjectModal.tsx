@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Textarea } from '@/components/ui/textarea';
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
 import { 
   Heart, 
   MessageCircle, 
@@ -19,15 +20,14 @@ import {
   Github,
   Globe,
   Mail,
-  Phone,
-  Linkedin,
-  FileText,
-  UserPlus,
   Send
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { PROJECT_STATUS_CONFIG, type Project } from '@/types/project';
+import { useProjectViews, useProjectComments } from '@/hooks/projects';
+import { usePostReactions } from '@/hooks/posts/use-post-reactions';
+import { ReactionType } from '@/types/database/social.types';
 
 interface ProjectModalProps {
   project: Project;
@@ -35,42 +35,31 @@ interface ProjectModalProps {
   onOpenChange: (open: boolean) => void;
 }
 
-// Mock comments data
-const mockComments = [
-  {
-    id: '1',
-    author: { username: 'María González', avatar_url: null },
-    content: '¡Excelente proyecto! Me encanta la interfaz y la funcionalidad de gamificación. ¿Planean implementar notificaciones push?',
-    created_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-    likes_count: 8
-  },
-  {
-    id: '2',
-    author: { username: 'Carlos Mendoza', avatar_url: null },
-    content: 'Muy buena implementación del sistema de puntos. ¿Consideraron usar WebSockets para el chat en tiempo real?',
-    created_at: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
-    likes_count: 5
-  },
-  {
-    id: '3',
-    author: { username: 'Ana Rodríguez', avatar_url: null },
-    content: '¿El código fuente estará disponible en GitHub? Me gustaría contribuir al proyecto.',
-    created_at: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
-    likes_count: 12
-  }
-];
-
 export function ProjectModal({ project, open, onOpenChange }: ProjectModalProps) {
   const [newComment, setNewComment] = useState('');
   const statusConfig = PROJECT_STATUS_CONFIG[project.status];
+  
+  // Hooks for views, reactions, and comments
+  const { viewsCount, viewers } = useProjectViews(project.id);
+  const { userReaction, onReaction } = usePostReactions(project.id);
+  const { comments, submitComment, isSubmitting } = useProjectComments(project.id);
+
+  // Count total reactions (from posts table if available)
+  const reactionsCount = project.likes_count || 0;
 
   const handleSubmitComment = (e: React.FormEvent) => {
     e.preventDefault();
     if (newComment.trim()) {
-      // TODO: Implement comment submission
-      console.log('Submitting comment:', newComment);
-      setNewComment('');
+      submitComment(newComment, {
+        onSuccess: () => {
+          setNewComment('');
+        }
+      });
     }
+  };
+
+  const handleReaction = () => {
+    onReaction(project.id, 'love' as ReactionType);
   };
 
   return (
@@ -102,19 +91,67 @@ export function ProjectModal({ project, open, onOpenChange }: ProjectModalProps)
                 Categoría: {project.category}
               </span>
             </div>
-            <div className="flex items-center gap-4 text-sm text-muted-foreground">
-              <div className="flex items-center gap-1">
-                <Heart size={16} />
-                <span>{project.likes_count}</span>
-              </div>
-              <div className="flex items-center gap-1">
+            <div className="flex items-center gap-4 text-sm">
+              {/* Reaction Button */}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleReaction}
+                className={`flex items-center gap-1 ${userReaction ? 'text-red-500' : 'text-muted-foreground'} hover:text-red-500`}
+              >
+                <Heart size={16} fill={userReaction ? 'currentColor' : 'none'} />
+                <span>{reactionsCount}</span>
+              </Button>
+              
+              {/* Comments Count */}
+              <div className="flex items-center gap-1 text-muted-foreground">
                 <MessageCircle size={16} />
-                <span>{project.comments_count}</span>
+                <span>{comments.length}</span>
               </div>
-              <div className="flex items-center gap-1">
-                <Eye size={16} />
-                <span>{project.views_count}</span>
-              </div>
+              
+              {/* Views with hover card showing viewers */}
+              <HoverCard>
+                <HoverCardTrigger asChild>
+                  <div className="flex items-center gap-1 text-muted-foreground cursor-pointer hover:text-foreground transition-colors">
+                    <Eye size={16} />
+                    <span>{viewsCount}</span>
+                  </div>
+                </HoverCardTrigger>
+                <HoverCardContent className="w-80">
+                  <div className="space-y-2">
+                    <h4 className="text-sm font-semibold">Visto por</h4>
+                    {viewers.length > 0 ? (
+                      <div className="space-y-2 max-h-60 overflow-y-auto">
+                        {viewers.map((viewer) => (
+                          <div key={viewer.viewer_id} className="flex items-center gap-2">
+                            <Avatar className="w-6 h-6">
+                              <AvatarImage src={viewer.avatar_url || undefined} />
+                              <AvatarFallback>
+                                {viewer.username?.charAt(0).toUpperCase() || 'U'}
+                              </AvatarFallback>
+                            </Avatar>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-medium truncate">
+                                {viewer.username || 'Usuario'}
+                              </p>
+                              <p className="text-xs text-muted-foreground">
+                                {formatDistanceToNow(new Date(viewer.viewed_at), {
+                                  addSuffix: true,
+                                  locale: es
+                                })}
+                              </p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-sm text-muted-foreground">
+                        Aún no hay visualizaciones
+                      </p>
+                    )}
+                  </div>
+                </HoverCardContent>
+              </HoverCard>
             </div>
           </div>
 
@@ -288,7 +325,7 @@ export function ProjectModal({ project, open, onOpenChange }: ProjectModalProps)
           <div className="border-t pt-6">
             <h3 className="font-semibold mb-4 flex items-center gap-2">
               <MessageCircle size={18} />
-              Comentarios ({mockComments.length})
+              Comentarios ({comments.length})
             </h3>
 
             {/* Comment Form */}
@@ -303,11 +340,17 @@ export function ProjectModal({ project, open, onOpenChange }: ProjectModalProps)
                     onChange={(e) => setNewComment(e.target.value)}
                     placeholder="Escribe un comentario..."
                     className="min-h-[80px] resize-none"
+                    disabled={isSubmitting}
                   />
                   <div className="flex justify-end mt-2">
-                    <Button type="submit" size="sm" className="flex items-center gap-1">
+                    <Button 
+                      type="submit" 
+                      size="sm" 
+                      className="flex items-center gap-1"
+                      disabled={isSubmitting || !newComment.trim()}
+                    >
                       <Send size={14} />
-                      Comentar
+                      {isSubmitting ? 'Enviando...' : 'Comentar'}
                     </Button>
                   </div>
                 </div>
@@ -316,37 +359,38 @@ export function ProjectModal({ project, open, onOpenChange }: ProjectModalProps)
 
             {/* Comments List */}
             <div className="space-y-4">
-              {mockComments.map((comment) => (
-                <div key={comment.id} className="flex gap-3">
-                  <Avatar className="w-8 h-8 flex-shrink-0">
-                    <AvatarImage src={comment.author.avatar_url} />
-                    <AvatarFallback>
-                      {comment.author.username.charAt(0).toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1">
-                    <div className="bg-muted rounded-lg p-3">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="font-medium text-sm">{comment.author.username}</span>
-                        <span className="text-xs text-muted-foreground">
-                          {formatDistanceToNow(new Date(comment.created_at), { 
-                            addSuffix: true,
-                            locale: es
-                          })}
-                        </span>
+              {comments.length > 0 ? (
+                comments.map((comment: any) => (
+                  <div key={comment.id} className="flex gap-3">
+                    <Avatar className="w-8 h-8 flex-shrink-0">
+                      <AvatarImage src={comment.profiles?.avatar_url} />
+                      <AvatarFallback>
+                        {comment.profiles?.username?.charAt(0).toUpperCase() || 'U'}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1">
+                      <div className="bg-muted rounded-lg p-3">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="font-medium text-sm">
+                            {comment.profiles?.username || 'Usuario'}
+                          </span>
+                          <span className="text-xs text-muted-foreground">
+                            {formatDistanceToNow(new Date(comment.created_at), { 
+                              addSuffix: true,
+                              locale: es
+                            })}
+                          </span>
+                        </div>
+                        <p className="text-sm">{comment.content}</p>
                       </div>
-                      <p className="text-sm">{comment.content}</p>
-                    </div>
-                    <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
-                      <button className="flex items-center gap-1 hover:text-primary">
-                        <Heart size={14} />
-                        <span>{comment.likes_count}</span>
-                      </button>
-                      <button className="hover:text-primary">Responder</button>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))
+              ) : (
+                <p className="text-center text-muted-foreground py-8">
+                  Sé el primero en comentar este proyecto
+                </p>
+              )}
             </div>
           </div>
         </div>

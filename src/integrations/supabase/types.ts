@@ -2104,6 +2104,35 @@ export type Database = {
           },
         ]
       }
+      project_views: {
+        Row: {
+          id: string
+          post_id: string
+          viewed_at: string
+          viewer_id: string | null
+        }
+        Insert: {
+          id?: string
+          post_id: string
+          viewed_at?: string
+          viewer_id?: string | null
+        }
+        Update: {
+          id?: string
+          post_id?: string
+          viewed_at?: string
+          viewer_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_views_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       promo_code_uses: {
         Row: {
           discount_amount: number
@@ -2869,6 +2898,19 @@ export type Database = {
       get_post_pin_status: {
         Args: { post_id: string }
         Returns: boolean
+      }
+      get_project_viewers: {
+        Args: { p_limit?: number; p_post_id: string }
+        Returns: {
+          avatar_url: string
+          username: string
+          viewed_at: string
+          viewer_id: string
+        }[]
+      }
+      get_project_views_count: {
+        Args: { p_post_id: string }
+        Returns: number
       }
       get_public_groups: {
         Args: { limit_count?: number }
