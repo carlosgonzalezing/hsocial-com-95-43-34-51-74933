@@ -128,7 +128,13 @@ const App = () => {
                   </Suspense>
                 </AuthGuard>
               } />
-              {/* Reels removed - FASE 2 */}
+              <Route path="/reels" element={
+                <AuthGuard>
+                  <Suspense fallback={<LoadingSpinner />}>
+                    <Reels />
+                  </Suspense>
+                </AuthGuard>
+              } />
               {/* Opportunities removed */}
               
               {/* Settings pages */}
