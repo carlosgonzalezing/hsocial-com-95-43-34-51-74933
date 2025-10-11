@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Check, X } from "lucide-react";
 
@@ -8,32 +7,20 @@ interface NotificationDropdownHeaderProps {
   onClose: () => void;
 }
 
-export function NotificationDropdownHeader({ 
-  hasUnread, 
-  onMarkAllAsRead,
-  onClose
-}: NotificationDropdownHeaderProps) {
+export function NotificationDropdownHeader({ hasUnread, onMarkAllAsRead, onClose }: NotificationDropdownHeaderProps) {
   return (
-    <div className="flex items-center justify-between border-b p-3">
+    // ✅ CAMBIO CLAVE AQUÍ: Se reemplaza 'p-3' por 'px-3 py-4' o 'px-3 pt-5'
+    // Probemos con 'pt-5' que es un padding superior de 1.25rem (20px), que suele ser suficiente.
+    <div className="flex items-center justify-between border-b px-3 pt-5 pb-3">
       <h3 className="font-semibold">Notificaciones</h3>
       <div className="flex items-center gap-2">
         {hasUnread && (
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            onClick={onMarkAllAsRead} 
-            className="h-8 text-xs"
-          >
+          <Button variant="ghost" size="sm" onClick={onMarkAllAsRead} className="h-8 text-xs">
             <Check className="mr-1 h-3.5 w-3.5" />
             <span>Marcar como leídas</span>
           </Button>
         )}
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={onClose}
-          className="h-8 w-8 p-0"
-        >
+        <Button variant="ghost" size="sm" onClick={onClose} className="h-8 w-8 p-0">
           <X className="h-4 w-4" />
         </Button>
       </div>
