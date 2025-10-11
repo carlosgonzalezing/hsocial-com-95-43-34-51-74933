@@ -9,9 +9,8 @@ interface NotificationDropdownHeaderProps {
 
 export function NotificationDropdownHeader({ hasUnread, onMarkAllAsRead, onClose }: NotificationDropdownHeaderProps) {
   return (
-    // ✅ CAMBIO CLAVE AQUÍ: Se reemplaza 'p-3' por 'px-3 py-4' o 'px-3 pt-5'
-    // Probemos con 'pt-5' que es un padding superior de 1.25rem (20px), que suele ser suficiente.
-    <div className="flex items-center justify-between border-b px-3 pt-5 pb-3">
+    // ✅ CAMBIO CLAVE AQUÍ: Usamos pt-8 (padding superior de 32px)
+    <div className="flex items-center justify-between border-b px-3 pt-8 pb-3">
       <h3 className="font-semibold">Notificaciones</h3>
       <div className="flex items-center gap-2">
         {hasUnread && (
