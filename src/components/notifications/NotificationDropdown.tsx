@@ -95,11 +95,11 @@ export function NotificationDropdown() {
           )}
         </Button>
       </PopoverTrigger>
-      {/* 💥 CAMBIO AGRESIVO: Forzamos la posición y el z-index para evitar la barra fija. */}
+      {/* ✅ CORRECCIÓN FINAL: Usamos 'fixed' y 'top-[56px]' para saltar la barra superior */}
       <PopoverContent
         ref={popoverRef}
-        // Eliminamos 'align="end"' para que Tailwind CSS controle la posición
-        className="w-96 p-0 absolute right-0 top-[72px] z-50 max-h-[80vh] overflow-hidden"
+        // Clases ajustadas para posicionamiento fijo en la ventana (viewport)
+        className="w-96 p-0 fixed right-4 top-[56px] z-50 max-h-[80vh] overflow-hidden"
       >
         <NotificationDropdownHeader hasUnread={hasUnread} onMarkAllAsRead={handleMarkAllAsRead} onClose={handleClose} />
         <ScrollArea className="max-h-[calc(80vh-60px)]">
