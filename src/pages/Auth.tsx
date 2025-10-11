@@ -3,7 +3,8 @@ import { useState, useEffect } from "react";
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { LoginForm } from "@/components/auth/LoginForm";
-import { RegisterForm } from "@/components/auth/RegisterForm";
+import { MultiStepRegistration } from "@/components/auth/MultiStepRegistration";
+import { AcademicOnboardingModal } from "@/components/onboarding/AcademicOnboardingModal";
 import { sendVerificationEmail } from "@/lib/auth/verification";
 import { useTheme } from "next-themes";
 import { Moon, Sun, CheckCircle } from "lucide-react";
@@ -11,12 +12,14 @@ import { RecoveryTokenHandler } from "@/components/auth/RecoveryTokenHandler";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { SEOHead } from "@/utils/safe-seo";
 import { useAuthRedirect } from "@/hooks/use-auth-redirect";
+import { useOnboarding } from "@/hooks/use-onboarding";
 
 export default function Auth() {
   const [loading, setLoading] = useState(false);
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
   const [showVerificationSuccess, setShowVerificationSuccess] = useState(false);
   const { theme, setTheme } = useTheme();
+  const { showOnboarding, completeOnboarding, skipOnboarding } = useOnboarding();
   
   // Handle OAuth redirects and auth state changes
   useAuthRedirect();
@@ -135,7 +138,7 @@ export default function Auth() {
         {authMode === 'login' ? (
           <LoginForm loading={loading} setLoading={setLoading} />
         ) : (
-          <RegisterForm 
+          <MultiStepRegistration 
             loading={loading} 
             setLoading={setLoading} 
             sendVerificationEmail={sendVerificationEmail}
@@ -164,6 +167,13 @@ export default function Auth() {
           )}
         </div>
       </div>
+
+      {/* Academic Onboarding Modal */}
+      <AcademicOnboardingModal
+        open={showOnboarding}
+        onComplete={completeOnboarding}
+        onSkip={skipOnboarding}
+      />
       </main>
     </>
   );
