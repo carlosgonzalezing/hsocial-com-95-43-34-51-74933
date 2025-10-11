@@ -21,21 +21,14 @@ export function AcademicOnboardingModal({
   const [career, setCareer] = useState("");
   const [semester, setSemester] = useState("");
   const [gender, setGender] = useState("");
+  const [institutionName, setInstitutionName] = useState("");
+  const [academicRole, setAcademicRole] = useState("");
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
   const semesters = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Egresado"];
 
   const handleComplete = async () => {
-    if (!career || !semester) {
-      toast({
-        variant: "destructive",
-        title: "Campos incompletos",
-        description: "Por favor completa al menos tu carrera y semestre",
-      });
-      return;
-    }
-
     setLoading(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
@@ -47,6 +40,8 @@ export function AcademicOnboardingModal({
           career: career || null,
           semester: semester || null,
           gender: gender || null,
+          institution_name: institutionName || null,
+          academic_role: academicRole || null,
         })
         .eq('id', user.id);
 
@@ -86,8 +81,23 @@ export function AcademicOnboardingModal({
 
         <div className="space-y-4 py-4">
           <div>
+            <label htmlFor="institutionName" className="block text-sm font-medium mb-2">
+              ¿De qué institución eres? <span className="text-muted-foreground text-xs">(opcional)</span>
+            </label>
+            <input
+              id="institutionName"
+              type="text"
+              value={institutionName}
+              onChange={(e) => setInstitutionName(e.target.value)}
+              disabled={loading}
+              placeholder="Ej: Universidad Nacional"
+              className="w-full px-3 py-2 rounded-md border bg-background"
+            />
+          </div>
+
+          <div>
             <label htmlFor="career" className="block text-sm font-medium mb-2">
-              ¿Qué carrera estudias?
+              ¿Qué carrera estudias? <span className="text-muted-foreground text-xs">(opcional)</span>
             </label>
             <Select value={career} onValueChange={setCareer} disabled={loading}>
               <SelectTrigger id="career">
@@ -105,7 +115,7 @@ export function AcademicOnboardingModal({
 
           <div>
             <label htmlFor="semester" className="block text-sm font-medium mb-2">
-              ¿En qué semestre estás?
+              ¿En qué semestre estás? <span className="text-muted-foreground text-xs">(opcional)</span>
             </label>
             <Select value={semester} onValueChange={setSemester} disabled={loading}>
               <SelectTrigger id="semester">
@@ -117,6 +127,23 @@ export function AcademicOnboardingModal({
                     {semesterOption}
                   </SelectItem>
                 ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div>
+            <label htmlFor="academicRole" className="block text-sm font-medium mb-2">
+              Tu rol académico <span className="text-muted-foreground text-xs">(opcional)</span>
+            </label>
+            <Select value={academicRole} onValueChange={setAcademicRole} disabled={loading}>
+              <SelectTrigger id="academicRole">
+                <SelectValue placeholder="Selecciona tu rol" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="student">Estudiante</SelectItem>
+                <SelectItem value="professor">Profesor</SelectItem>
+                <SelectItem value="researcher">Investigador</SelectItem>
+                <SelectItem value="graduate">Egresado</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -142,7 +169,7 @@ export function AcademicOnboardingModal({
         <div className="space-y-2">
           <Button 
             onClick={handleComplete} 
-            disabled={loading || !career || !semester}
+            disabled={loading}
             className="w-full"
           >
             {loading ? "Guardando..." : "Completar perfil"}

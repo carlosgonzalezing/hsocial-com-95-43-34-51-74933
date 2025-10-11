@@ -19,12 +19,7 @@ export function useRegister(setLoading: (loading: boolean) => void, sendVerifica
     setLoading(true);
 
     try {
-      // Validar que los campos obligatorios estén completos
-      if (!institutionName) {
-        throw new Error("Por favor ingresa tu institución educativa");
-      }
-
-      // Primero registramos al usuario
+      // Registro simplificado - solo campos básicos
       const { error, data } = await supabase.auth.signUp({
         email,
         password,
@@ -34,17 +29,16 @@ export function useRegister(setLoading: (loading: boolean) => void, sendVerifica
             career: career || null,
             semester: semester || null,
             gender: gender || null,
-            institution_name: institutionName,
+            institution_name: institutionName || null,
             academic_role: academicRole || null,
           },
-          // Redirigir a /auth para que el token de verificación sea procesado correctamente
-          emailRedirectTo: `${window.location.origin}/auth`,
+          emailRedirectTo: `${window.location.origin}/`,
         },
       });
       
       if (error) throw error;
 
-      // También actualizamos la tabla de perfiles con los nuevos campos
+      // Actualizar perfil con datos disponibles
       if (data.user) {
         const { error: profileError } = await (supabase as any).from('profiles').upsert({
           id: data.user.id,
@@ -52,27 +46,18 @@ export function useRegister(setLoading: (loading: boolean) => void, sendVerifica
           career: career || null,
           semester: semester || null,
           gender: gender || null,
-          institution_name: institutionName,
+          institution_name: institutionName || null,
           academic_role: academicRole || null,
         });
         
         if (profileError) {
           console.error("Error updating profile:", profileError);
         }
-        
-        // Enviar correo de verificación personalizado
-        try {
-          await sendVerificationEmail(email, username);
-          console.log("Correo de verificación enviado exitosamente");
-        } catch (emailError) {
-          console.error("Error al enviar correo personalizado:", emailError);
-          // Continuamos con el proceso aunque falle el envío del correo personalizado
-        }
       }
 
       toast({
-        title: "¡Registro exitoso!",
-        description: "Por favor revisa tu correo electrónico para verificar tu cuenta. Te hemos enviado instrucciones detalladas sobre los siguientes pasos.",
+        title: "¡Bienvenido a H Social!",
+        description: "Tu cuenta ha sido creada exitosamente. Completa tu perfil para obtener una mejor experiencia.",
       });
     } catch (error: any) {
       toast({

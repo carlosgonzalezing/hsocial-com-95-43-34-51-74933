@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { LoginForm } from "@/components/auth/LoginForm";
-import { MultiStepRegistration } from "@/components/auth/MultiStepRegistration";
+import { SimplifiedRegistration } from "@/components/auth/SimplifiedRegistration";
 import { AcademicOnboardingModal } from "@/components/onboarding/AcademicOnboardingModal";
 import { sendVerificationEmail } from "@/lib/auth/verification";
 import { useTheme } from "next-themes";
@@ -138,7 +138,7 @@ export default function Auth() {
         {authMode === 'login' ? (
           <LoginForm loading={loading} setLoading={setLoading} />
         ) : (
-          <MultiStepRegistration 
+          <SimplifiedRegistration 
             loading={loading} 
             setLoading={setLoading} 
             sendVerificationEmail={sendVerificationEmail}

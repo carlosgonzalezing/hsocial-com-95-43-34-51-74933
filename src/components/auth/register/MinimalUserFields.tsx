@@ -7,8 +7,6 @@ interface MinimalUserFieldsProps {
   setEmail: (email: string) => void;
   password: string;
   setPassword: (password: string) => void;
-  institutionName: string;
-  setInstitutionName: (institutionName: string) => void;
   loading: boolean;
 }
 
@@ -19,8 +17,6 @@ export function MinimalUserFields({
   setEmail,
   password,
   setPassword,
-  institutionName,
-  setInstitutionName,
   loading
 }: MinimalUserFieldsProps) {
   return (
@@ -78,23 +74,6 @@ export function MinimalUserFields({
         <p className="text-xs text-muted-foreground mt-1">
           Mínimo 6 caracteres
         </p>
-      </div>
-
-      <div>
-        <label htmlFor="institutionName" className="block text-sm font-medium mb-1">
-          Institución educativa
-        </label>
-        <Input
-          id="institutionName"
-          name="institutionName"
-          type="text"
-          placeholder="Nombre de tu institución"
-          value={institutionName}
-          onChange={(e) => setInstitutionName(e.target.value)}
-          disabled={loading}
-          required
-          autoComplete="organization"
-        />
       </div>
     </>
   );
