@@ -12,9 +12,8 @@ export function NotificationDropdownHeader({ 
   onMarkAllAsRead,
   onClose
 }: NotificationDropdownHeaderProps) {
-  return (
-    {/* ✅ REVERTIDO: Vuelve a p-3 (padding uniforme) */}
-    <div className="flex items-center justify-between border-b p-3">
+  return (
+    <div className="flex items-center justify-between border-b p-3">
       <h3 className="font-semibold">Notificaciones</h3>
       <div className="flex items-center gap-2">
         {hasUnread && (
