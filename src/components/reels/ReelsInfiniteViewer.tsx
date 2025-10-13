@@ -7,6 +7,9 @@ import { formatDistanceToNow } from "date-fns";
 import { es } from "date-fns/locale";
 import { useIntersectionObserver } from "@/hooks/use-intersection-observer";
 import { usePostReactions } from "@/hooks/posts/use-post-reactions";
+import { useDoubleClick } from "@/hooks/use-double-click";
+import { useVolumeControl } from "@/hooks/reels/use-volume-control";
+import { VolumeSlider } from "./VolumeSlider";
 
 interface ReelItemProps {
   post: Post;
@@ -17,7 +20,6 @@ interface ReelItemProps {
 
 const ReelItem = memo(function ReelItem({ post, isActive, onReaction, onViewTracked }: ReelItemProps) {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(true);
   const [startTime, setStartTime] = useState<number | null>(null);
   const [hasError, setHasError] = useState(false);
   const [currentSrc, setCurrentSrc] = useState(post.media_url);
@@ -25,6 +27,9 @@ const ReelItem = memo(function ReelItem({ post, isActive, onReaction, onViewTrac
   const containerRef = useRef<HTMLDivElement>(null);
   
   const { userReaction, onReaction: handleReaction } = usePostReactions(post.id);
+  
+  // Control de volumen mejorado
+  const { volume, isMuted, showSlider, toggleMute, changeVolume, showSliderTemporarily } = useVolumeControl(videoRef);
 
   // Auto-play cuando está visible
   const { isIntersecting } = useIntersectionObserver(containerRef, {
@@ -51,11 +56,7 @@ const ReelItem = memo(function ReelItem({ post, isActive, onReaction, onViewTrac
     }
   }, [isActive, isIntersecting, post.id, startTime, onViewTracked]);
 
-  useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.muted = isMuted;
-    }
-  }, [isMuted]);
+  // El volumen se maneja en el hook useVolumeControl
 
   // Manejar errores de video con fallback automático
   const handleVideoError = useCallback(() => {
@@ -74,7 +75,7 @@ const ReelItem = memo(function ReelItem({ post, isActive, onReaction, onViewTrac
     setCurrentSrc(post.media_url);
   }, [post.media_url]);
 
-  const handleVideoClick = useCallback(() => {
+  const togglePlay = useCallback(() => {
     setIsPlaying(!isPlaying);
     if (videoRef.current) {
       if (!isPlaying) {
@@ -85,6 +86,16 @@ const ReelItem = memo(function ReelItem({ post, isActive, onReaction, onViewTrac
       }
     }
   }, [isPlaying]);
+
+  // Doble click para mute/unmute, single click para play/pause
+  const handleVideoClick = useDoubleClick(
+    togglePlay,
+    () => {
+      toggleMute();
+      showSliderTemporarily();
+    },
+    300
+  );
 
   const handleLike = () => {
     handleReaction(post.id, 'love');
@@ -144,16 +155,22 @@ const ReelItem = memo(function ReelItem({ post, isActive, onReaction, onViewTrac
         </div>
       )}
 
-      {/* Controls - Volume */}
-      <div className="absolute top-4 right-4">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="bg-black/50 text-white hover:bg-black/70"
-          onClick={() => setIsMuted(!isMuted)}
-        >
-          {isMuted ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
-        </Button>
+      {/* Volume Slider Flotante */}
+      <VolumeSlider
+        volume={volume}
+        isMuted={isMuted}
+        show={showSlider}
+        onChange={changeVolume}
+        onMuteToggle={toggleMute}
+      />
+
+      {/* Indicador de estado de volumen (esquina inferior izquierda) */}
+      <div className="absolute bottom-20 left-4 pointer-events-none">
+        {isMuted ? (
+          <VolumeX className="h-5 w-5 text-white/70" />
+        ) : (
+          <Volume2 className="h-5 w-5 text-white/70" />
+        )}
       </div>
 
       {/* User info and content */}
