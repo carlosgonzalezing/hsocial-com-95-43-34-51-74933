@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { reactionIcons } from "./ReactionIcons";
+import { getMutualFriends } from "@/lib/friends/get-mutual-friends";
+import { useAuth } from "@/hooks/use-auth";
+import { ReactionUserItem } from "./ReactionUserItem";
 
 interface Reaction {
   id: string;
@@ -13,6 +14,7 @@ interface Reaction {
   username: string;
   avatar_url?: string;
   career?: string;
+  mutualFriendsCount?: number;
 }
 
 interface ReactionsDialogProps {
@@ -24,6 +26,7 @@ interface ReactionsDialogProps {
 export function ReactionsDialog({ postId, open, onOpenChange }: ReactionsDialogProps) {
   const [reactions, setReactions] = useState<Reaction[]>([]);
   const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
 
   useEffect(() => {
     if (open && postId) {
@@ -37,17 +40,7 @@ export function ReactionsDialog({ postId, open, onOpenChange }: ReactionsDialogP
       
       const { data, error } = await supabase
         .from("reactions")
-        .select(`
-          id,
-          reaction_type,
-          created_at,
-          user_id,
-          profiles (
-            username,
-            avatar_url,
-            career
-          )
-        `)
+        .select("id, reaction_type, created_at, user_id")
         .eq("post_id", postId)
         .order("created_at", { ascending: false });
 
@@ -56,17 +49,34 @@ export function ReactionsDialog({ postId, open, onOpenChange }: ReactionsDialogP
         return;
       }
 
-      const formattedReactions: Reaction[] = (data || []).map((item: any) => ({
-        id: item.id,
-        reaction_type: item.reaction_type,
-        created_at: item.created_at,
-        user_id: item.user_id,
-        username: item.profiles?.username || "Usuario",
-        avatar_url: item.profiles?.avatar_url,
-        career: item.profiles?.career
-      }));
+      // Get profiles and mutual friends
+      const reactionsWithDetails = await Promise.all(
+        (data || []).map(async (item: any) => {
+          const { data: profile } = await supabase
+            .from("profiles")
+            .select("username, avatar_url, career")
+            .eq("id", item.user_id)
+            .single();
 
-      setReactions(formattedReactions);
+          let mutualFriendsCount = 0;
+          if (user && user.id !== item.user_id) {
+            mutualFriendsCount = await getMutualFriends(user.id, item.user_id);
+          }
+
+          return {
+            id: item.id,
+            reaction_type: item.reaction_type,
+            created_at: item.created_at,
+            user_id: item.user_id,
+            username: profile?.username || "Usuario",
+            avatar_url: profile?.avatar_url,
+            career: profile?.career,
+            mutualFriendsCount,
+          };
+        })
+      );
+
+      setReactions(reactionsWithDetails);
     } catch (error) {
       console.error("Error in fetchReactions:", error);
     } finally {
@@ -101,32 +111,12 @@ export function ReactionsDialog({ postId, open, onOpenChange }: ReactionsDialogP
             </p>
           ) : (
             reactions.map((reaction) => (
-              <div 
-                key={reaction.id} 
-                className="flex items-start gap-3 p-2 rounded-md hover:bg-muted/50 transition-colors"
-              >
-                <Avatar className="h-10 w-10">
-                  {reaction.avatar_url ? (
-                    <AvatarImage src={reaction.avatar_url} alt={reaction.username} />
-                  ) : (
-                    <AvatarFallback>
-                      {reaction.username.charAt(0).toUpperCase()}
-                    </AvatarFallback>
-                  )}
-                </Avatar>
-                
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <span className="font-medium truncate">{reaction.username}</span>
-                    <span className="text-lg">{getReactionEmoji(reaction.reaction_type)}</span>
-                  </div>
-                  {reaction.career && (
-                    <Badge variant="outline" className="mt-1 text-xs">
-                      🎓 {reaction.career}
-                    </Badge>
-                  )}
-                </div>
-              </div>
+              <ReactionUserItem
+                key={reaction.id}
+                reaction={reaction}
+                currentUserId={user?.id}
+                getReactionEmoji={getReactionEmoji}
+              />
             ))
           )}
         </div>

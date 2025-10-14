@@ -6,6 +6,7 @@ import { FacebookLayout } from "@/components/layout/FacebookLayout";
 import { useAuth } from "@/hooks/use-auth";
 import { SimpleOnboardingModal } from "@/components/onboarding/SimpleOnboardingModal";
 import { useOnboarding } from "@/hooks/use-onboarding";
+import { StoriesBar } from "@/components/stories/StoriesBar";
 
 
 export default function Index() {
@@ -46,14 +47,15 @@ export default function Index() {
 
   return (
     <FacebookLayout>
-      <div className="w-full space-y-1">
+      <div className="w-full space-y-0">
+        <StoriesBar />
+        
         <PostCreatorCompact 
           onOpenModal={handleOpenModal}
           onOpenWithMedia={handleOpenModalWithMedia}
           onFileDrop={handleFileDrop}
           onMoodSelect={handleMoodSelect}
         />
-        
         
         <Feed />
       </div>

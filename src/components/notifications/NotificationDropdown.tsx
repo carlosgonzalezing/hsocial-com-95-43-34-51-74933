@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { NotificationDropdownHeader } from "./NotificationDropdownHeader";
 import { NotificationGroups } from "./NotificationGroups";
 import { NotificationsSuggestions } from "./NotificationsSuggestions";
+import { NotificationTabs } from "./NotificationTabs";
 
 export function NotificationDropdown() {
   const [open, setOpen] = useState(false);
@@ -18,13 +19,29 @@ export function NotificationDropdown() {
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const { suggestions } = useFriends(currentUserId);
   const [showSuggestions, setShowSuggestions] = useState(true);
+  const [activeTab, setActiveTab] = useState("all");
   const popoverRef = useRef<HTMLDivElement>(null);
+
+  // Filter notifications by active tab
+  const filteredNotifications = notifications.filter((notification) => {
+    if (activeTab === "all") return true;
+    if (activeTab === "friends") {
+      return ["friend_request", "friend_accepted"].includes(notification.type);
+    }
+    if (activeTab === "comments") {
+      return ["post_comment", "comment_reply", "mention"].includes(notification.type);
+    }
+    if (activeTab === "reactions") {
+      return ["post_like", "story_reaction", "comment_like"].includes(notification.type);
+    }
+    return true;
+  });
 
   // Group notifications by date
   const today = new Date().toDateString();
   const yesterday = new Date(Date.now() - 86400000).toDateString();
 
-  const groupedNotifications = notifications.reduce(
+  const groupedNotifications = filteredNotifications.reduce(
     (acc, notification) => {
       const date = new Date(notification.created_at).toDateString();
 
@@ -39,6 +56,20 @@ export function NotificationDropdown() {
     },
     { today: [], yesterday: [], older: [] },
   );
+
+  // Calculate tab counts
+  const tabCounts = {
+    all: notifications.filter((n) => !n.read).length,
+    friends: notifications.filter(
+      (n) => !n.read && ["friend_request", "friend_accepted"].includes(n.type)
+    ).length,
+    comments: notifications.filter(
+      (n) => !n.read && ["post_comment", "comment_reply", "mention"].includes(n.type)
+    ).length,
+    reactions: notifications.filter(
+      (n) => !n.read && ["post_like", "story_reaction", "comment_like"].includes(n.type)
+    ).length,
+  };
 
   useEffect(() => {
     const hasUnreadNotifications = notifications.some((notification) => !notification.read);
@@ -102,9 +133,27 @@ export function NotificationDropdown() {
         className="w-96 p-0 fixed right-4 top-[56px] z-50 max-h-[80vh] overflow-hidden"
       >
         <NotificationDropdownHeader hasUnread={hasUnread} onMarkAllAsRead={handleMarkAllAsRead} onClose={handleClose} />
-        <ScrollArea className="max-h-[calc(80vh-60px)]">
-          {notifications.length === 0 ? (
-            <div className="p-6 text-center text-muted-foreground">No tienes notificaciones</div>
+        
+        <div className="px-3 py-2">
+          <NotificationTabs
+            activeTab={activeTab}
+            onTabChange={setActiveTab}
+            counts={tabCounts}
+          />
+        </div>
+
+        <ScrollArea className="max-h-[calc(80vh-120px)]">
+          {filteredNotifications.length === 0 ? (
+            <div className="p-6 text-center text-muted-foreground">
+              {activeTab === "all" 
+                ? "No tienes notificaciones" 
+                : `No tienes notificaciones de ${
+                    activeTab === "friends" ? "amigos" :
+                    activeTab === "comments" ? "comentarios" :
+                    "reacciones"
+                  }`
+              }
+            </div>
           ) : (
             <>
               <NotificationGroups
@@ -116,7 +165,7 @@ export function NotificationDropdown() {
               />
 
               {/* Sección de Sugerencias para ti */}
-              {showSuggestions && (
+              {activeTab === "all" && showSuggestions && (
                 <NotificationsSuggestions
                   suggestions={suggestions}
                   onDismissSuggestion={handleDismissSuggestion}

@@ -13,7 +13,18 @@ export type NotificationType =
   | 'mention'
   | 'profile_heart_received'
   | 'engagement_hearts_earned'
-  | 'hearts_daily_summary';
+  | 'hearts_daily_summary'
+  // New types
+  | 'story_reaction'
+  | 'story_view'
+  | 'story_reply'
+  | 'post_share'
+  | 'comment_like'
+  | 'birthday'
+  | 'event_invitation'
+  | 'group_invitation'
+  | 'group_post'
+  | 'suggestion';
 
 export interface Notification {
   id: string;
