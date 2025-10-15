@@ -14,6 +14,7 @@ interface SingleCommentProps {
   onReply: (id: string, username: string) => void;
   onDeleteComment: (commentId: string) => void;
   isReply?: boolean;
+  postAuthorId?: string;
 }
 
 export function SingleComment({
@@ -21,7 +22,8 @@ export function SingleComment({
   onReaction,
   onReply,
   onDeleteComment,
-  isReply = false
+  isReply = false,
+  postAuthorId
 }: SingleCommentProps) {
   const handleReply = useCallback(() => {
     const username = comment.profiles?.username || "usuario";
@@ -50,6 +52,7 @@ export function SingleComment({
         profileData={comment.profiles}
         timestamp={comment.created_at}
         isReply={isReply}
+        postAuthorId={postAuthorId}
       />
       
       {/* Comment content */}
@@ -89,6 +92,7 @@ export function SingleComment({
                 onReply={onReply}
                 onDeleteComment={onDeleteComment}
                 isReply={true}
+                postAuthorId={postAuthorId}
               />
             ))}
           </div>

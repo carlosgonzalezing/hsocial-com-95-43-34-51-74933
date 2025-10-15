@@ -11,9 +11,10 @@ interface CommentHeaderProps {
   };
   timestamp: string;
   isReply?: boolean;
+  postAuthorId?: string;
 }
 
-export function CommentHeader({ userId, profileData, timestamp, isReply = false }: CommentHeaderProps) {
+export function CommentHeader({ userId, profileData, timestamp, isReply = false, postAuthorId }: CommentHeaderProps) {
   const navigate = useNavigate();
   const username = profileData?.username || "Usuario";
   const avatarUrl = profileData?.avatar_url;
@@ -39,6 +40,7 @@ export function CommentHeader({ userId, profileData, timestamp, isReply = false 
         userId={userId}
         username={username}
         timestamp={timestamp}
+        isPostAuthor={postAuthorId === userId}
       />
     </div>
   );

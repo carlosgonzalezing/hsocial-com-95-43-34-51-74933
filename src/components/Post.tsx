@@ -104,6 +104,7 @@ export function Post({ post, hideComments = false, isHidden = false }: PostProps
           showComments={showComments}
           commentImage={commentImage}
           setCommentImage={setCommentImage}
+          postAuthorId={post.user_id}
         />
       )}
     </PostWrapper>

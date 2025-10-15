@@ -18,6 +18,7 @@ interface CommentsProps {
   showComments: boolean;
   commentImage?: File | null;
   setCommentImage?: (file: File | null) => void;
+  postAuthorId?: string;
 }
 
 export function Comments({
@@ -33,7 +34,8 @@ export function Comments({
   onCancelReply,
   showComments,
   commentImage,
-  setCommentImage
+  setCommentImage,
+  postAuthorId
 }: CommentsProps) {
   // Solo renderizamos los comentarios si showComments es true
   if (!showComments) return null;
@@ -46,6 +48,7 @@ export function Comments({
           onReaction={onReaction}
           onReply={onReply}
           onDeleteComment={onDeleteComment}
+          postAuthorId={postAuthorId}
         />
       </div>
 

@@ -8,13 +8,15 @@ interface CommentsListProps {
   onReaction: (commentId: string, type: ReactionType) => void;
   onReply: (id: string, username: string) => void;
   onDeleteComment: (commentId: string) => void;
+  postAuthorId?: string;
 }
 
 export function CommentsList({
   comments,
   onReaction,
   onReply,
-  onDeleteComment
+  onDeleteComment,
+  postAuthorId
 }: CommentsListProps) {
   if (comments.length === 0) {
     return (
@@ -33,6 +35,7 @@ export function CommentsList({
           onReaction={onReaction}
           onReply={onReply}
           onDeleteComment={onDeleteComment}
+          postAuthorId={postAuthorId}
         />
       ))}
     </div>
