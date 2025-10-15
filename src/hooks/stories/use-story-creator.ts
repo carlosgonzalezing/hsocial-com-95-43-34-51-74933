@@ -29,16 +29,16 @@ export function useStoryCreator() {
       if (file) {
         const fileExt = file.name.split(".").pop();
         const fileName = `${user.id}-${Date.now()}.${fileExt}`;
-        const filePath = `stories/${fileName}`;
+        const filePath = `${user.id}/${fileName}`;
 
         const { error: uploadError } = await supabase.storage
-          .from("posts")
+          .from("stories")
           .upload(filePath, file);
 
         if (uploadError) throw uploadError;
 
         const { data: { publicUrl } } = supabase.storage
-          .from("posts")
+          .from("stories")
           .getPublicUrl(filePath);
 
         imageUrl = publicUrl;

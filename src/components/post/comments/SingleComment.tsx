@@ -43,19 +43,17 @@ export function SingleComment({
   }, [onReaction]);
 
   return (
-    <div className={`flex gap-2 ${isReply ? "ml-8" : ""}`}>
-      {/* Avatar column */}
-      <div className="flex-shrink-0">
-        <CommentHeader
-          userId={comment.user_id}
-          profileData={comment.profiles}
-          timestamp={comment.created_at}
-          isReply={isReply}
-        />
-      </div>
+    <div className={`flex flex-col gap-1 ${isReply ? "ml-8" : ""}`}>
+      {/* Header with avatar and author */}
+      <CommentHeader
+        userId={comment.user_id}
+        profileData={comment.profiles}
+        timestamp={comment.created_at}
+        isReply={isReply}
+      />
       
-      {/* Comment content column */}
-      <div className="flex-grow space-y-1">
+      {/* Comment content */}
+      <div className="space-y-1 ml-10">
         <CommentContent 
           content={comment.content} 
           media={comment.media_url} 

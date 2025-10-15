@@ -2802,14 +2802,22 @@ export type Database = {
         }
         Returns: Json
       }
+      create_notification: {
+        Args: {
+          p_comment_id?: string
+          p_message?: string
+          p_post_id?: string
+          p_receiver_id: string
+          p_sender_id: string
+          p_type: string
+        }
+        Returns: string
+      }
       create_reaction: {
         Args:
           | Record<PropertyKey, never>
           | { p_post_id: number; p_reaction_type?: string }
-        Returns: {
-          error_message: string
-          reaction_data: Json
-        }[]
+        Returns: undefined
       }
       create_university_group: {
         Args: { institution_id: string; institution_name: string }
@@ -3039,6 +3047,10 @@ export type Database = {
       is_premium_user: {
         Args: { user_id_param: string }
         Returns: boolean
+      }
+      mark_notifications_read: {
+        Args: { notification_ids?: string[] }
+        Returns: undefined
       }
       mark_users_offline: {
         Args: Record<PropertyKey, never>
