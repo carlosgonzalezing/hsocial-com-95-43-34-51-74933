@@ -21,8 +21,8 @@ export function HoverReactionButton({
 }: HoverReactionButtonProps) {
   const [animatingReaction, setAnimatingReaction] = useState<ReactionType | null>(null);
 
-  // Solo usamos reacción "love"
-  const primaryReactionType: ReactionType = "love";
+  // Determinar qué reacción mostrar basado en la reacción del usuario
+  const primaryReactionType: ReactionType = userReaction || "love";
   const reactionData = reactionIcons[primaryReactionType];
   
   // Click en el botón principal
@@ -37,7 +37,7 @@ export function HoverReactionButton({
   }, [onReactionClick, primaryReactionType]);
 
   // Determinar si el usuario ha reaccionado
-  const hasReacted = userReaction === "love";
+  const hasReacted = userReaction !== null;
   
   // Obtener el ícono de la reacción
   const CurrentIcon = reactionData.icon;
@@ -70,7 +70,7 @@ export function HoverReactionButton({
           />
         )}
         <span className={`text-sm font-medium ${hasReacted ? currentColor : ''}`}>
-          {hasReacted ? "Te encanta" : "Me encanta"}
+          {hasReacted ? reactionData.label : "Reaccionar"}
         </span>
       </Button>
     </div>

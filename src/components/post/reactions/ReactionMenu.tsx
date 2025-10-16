@@ -20,13 +20,13 @@ export function ReactionMenu({
   
   if (!show) return null;
 
-  // Solo mostramos la reacción "love"
-  const reactionTypes: ReactionType[] = ["love"];
+  // Mostramos las 5 reacciones
+  const reactionTypes: ReactionType[] = ["awesome", "love", "interesting", "success", "join"];
   
   return (
     <div 
       className={cn(
-        "flex items-center gap-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full px-2 py-1 shadow-lg transition-all duration-200",
+        "flex items-center gap-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full px-4 py-2 shadow-xl transition-all duration-200",
         show ? "opacity-100 scale-100" : "opacity-0 scale-95"
       )}
       onPointerLeave={onPointerLeave}
@@ -40,16 +40,18 @@ export function ReactionMenu({
           <button
             key={type}
             className={cn(
-              "p-2 rounded-full transition-transform duration-150 hover:scale-125",
+              "reaction-menu-item p-2 rounded-full transition-all duration-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:scale-125",
               isActive && "scale-125 bg-gray-100 dark:bg-gray-700"
             )}
             onClick={() => onReactionSelected(type)}
             onPointerEnter={() => setActiveReaction(type)}
             onPointerLeave={() => setActiveReaction(null)}
+            title={reaction.label}
           >
             <Icon 
-              className={`h-6 w-6 ${reaction.color}`}
-              strokeWidth={1.5}
+              className={`h-7 w-7 ${reaction.color}`}
+              strokeWidth={2}
+              fill="currentColor"
             />
           </button>
         );

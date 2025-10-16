@@ -18,8 +18,8 @@ export function EnhancedReactionButton({
 }: EnhancedReactionButtonProps) {
   const { isJoining, handleProjectJoin } = useProjectJoin(postId);
   
-  // Solo usamos reacción "love" para todos los posts
-  const primaryReactionType: ReactionType = "love";
+  // Usar la reacción del usuario o "love" por defecto
+  const primaryReactionType: ReactionType = userReaction || "love";
   const primaryReaction = reactionIcons[primaryReactionType];
   
   const handleClick = async () => {

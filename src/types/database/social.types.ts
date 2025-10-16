@@ -1,5 +1,5 @@
 
-export type ReactionType = "love";
+export type ReactionType = "awesome" | "love" | "interesting" | "success" | "join";
 
 export interface ReactionData {
   id: string;

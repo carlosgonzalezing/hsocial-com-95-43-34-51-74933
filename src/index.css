@@ -364,9 +364,88 @@
   pointer-events: none;
 }
 
+/* ===== SISTEMA DE 5 REACCIONES - HSocial ===== */
+
+/* 1. Genial (Estrella) - Giro + Palpitación */
+@keyframes star-spin-pulse {
+  0% { transform: rotate(0deg) scale(1); }
+  25% { transform: rotate(90deg) scale(1.15); }
+  50% { transform: rotate(180deg) scale(1.2); }
+  75% { transform: rotate(270deg) scale(1.15); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+
+.reaction-awesome {
+  animation: star-spin-pulse 0.7s ease-in-out;
+  color: #facc15; /* yellow-400 */
+}
+
+/* 2. Me encanta (Corazón) - Mejorar animación existente */
+@keyframes heart-pump {
+  0%, 100% { transform: scale(1); }
+  20% { transform: scale(1.25); }
+  40% { transform: scale(1.1); }
+  60% { transform: scale(1.3); }
+  80% { transform: scale(1.1); }
+}
+
+.reaction-love {
+  animation: heart-pump 0.6s ease-in-out;
+  color: #ef4444; /* red-500 */
+}
+
+/* 3. Interesante (Bombilla) - Parpadeo con brillo */
+@keyframes lightbulb-flash {
+  0%, 100% { 
+    transform: scale(1); 
+    filter: brightness(1) drop-shadow(0 0 0px transparent); 
+  }
+  25% { 
+    transform: scale(1.2); 
+    filter: brightness(1.5) drop-shadow(0 0 8px #f97316); 
+  }
+  50% { 
+    transform: scale(0.95); 
+    filter: brightness(0.8); 
+  }
+  75% { 
+    transform: scale(1.15); 
+    filter: brightness(1.4) drop-shadow(0 0 6px #f97316); 
+  }
+}
+
+.reaction-interesting {
+  animation: lightbulb-flash 0.8s ease-in-out;
+  color: #f97316; /* orange-500 */
+}
+
+/* 4. Éxito (Birrete) - Salto hacia arriba */
+@keyframes cap-jump {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  20% { transform: translateY(-8px) rotate(-5deg); }
+  40% { transform: translateY(-12px) rotate(0deg); }
+  60% { transform: translateY(-8px) rotate(5deg); }
+  80% { transform: translateY(-4px) rotate(0deg); }
+}
+
+.reaction-success {
+  animation: cap-jump 0.7s ease-out;
+  color: #2563eb; /* blue-600 */
+}
+
+/* 5. Me uno (Apretón de manos) - Mejorar animación existente */
+@keyframes handshake-shake {
+  0%, 100% { transform: translateX(0) rotate(0deg); }
+  15% { transform: translateX(-3px) rotate(-3deg); }
+  30% { transform: translateX(3px) rotate(3deg); }
+  45% { transform: translateX(-2px) rotate(-2deg); }
+  60% { transform: translateX(2px) rotate(2deg); }
+  75% { transform: translateX(-1px) rotate(-1deg); }
+}
+
 .reaction-join {
-  animation: handshake 0.7s ease-in-out;
-  color: hsl(var(--facebook-green));
+  animation: handshake-shake 0.6s ease-in-out;
+  color: #10b981; /* green-500 */
 }
 
 /* Menu entrance animation */
@@ -379,6 +458,13 @@
   transform: scale(1.2);
   transition: transform 0.15s ease-out;
   filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+}
+
+/* Efecto de hover en el menú de reacciones */
+.reaction-menu-item:hover {
+  transform: scale(1.3);
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15));
 }
 
 @keyframes fade-in {

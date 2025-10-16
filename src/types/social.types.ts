@@ -1,4 +1,4 @@
-export type ReactionType = 'love';
+export type ReactionType = 'awesome' | 'love' | 'interesting' | 'success' | 'join';
 
 export interface LikeTable {
   Row: {
