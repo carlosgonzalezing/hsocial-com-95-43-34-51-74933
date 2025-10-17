@@ -5,7 +5,6 @@ import { Post } from "@/types/post";
 import { FeedContent } from "./FeedContent";
 import { usePersonalizedFeed } from "@/hooks/feed/use-personalized-feed";
 import { useRealtimeFeedSimple } from "@/hooks/feed/hooks/use-realtime-feed-simple";
-import { PersonalizedFeedToggle, FeedModeExplanation } from "./PersonalizedFeedToggle";
 import { FeedFilters, type PostType } from "./FeedFilters";
 
 interface FeedProps {
@@ -55,16 +54,6 @@ export function Feed({ userId }: FeedProps) {
 
   return (
     <div className="space-y-0 feed-container mx-auto w-full">
-      {/* Feed Mode Toggle */}
-      <PersonalizedFeedToggle 
-        isPersonalized={isPersonalized}
-        onToggle={setIsPersonalized}
-        stats={{ rawPostsCount, personalizedPostsCount }}
-      />
-      
-      {/* Explanation */}
-      <FeedModeExplanation isPersonalized={isPersonalized} />
-
       {/* Feed Filters */}
       <FeedFilters selectedTypes={selectedTypes} onTypeChange={setSelectedTypes} />
 

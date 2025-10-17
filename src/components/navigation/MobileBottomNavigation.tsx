@@ -62,7 +62,7 @@ export function MobileBottomNavigation({
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-background border-t z-50 md:hidden">
+    <nav className="fixed bottom-0 left-0 right-0 bg-black border-t border-white/10 z-50 md:hidden">
       <div className="grid grid-cols-5 items-center py-2">
         {navItems.map((item) => {
           const Icon = item.icon;
@@ -76,8 +76,8 @@ export function MobileBottomNavigation({
               className={cn(
                 "flex flex-col items-center justify-center p-2 rounded-lg transition-colors relative w-full",
                 isActive 
-                  ? "text-primary bg-primary/10" 
-                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                  ? "text-white" 
+                  : "text-gray-400 hover:text-gray-200"
               )}
             >
               <Icon className="h-7 w-7 mb-1" />
