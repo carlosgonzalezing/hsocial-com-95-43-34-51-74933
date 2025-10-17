@@ -1,5 +1,5 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Home, MessageCircle, Users, Bell, User, Search, Settings, UserPlus, PlaySquare, Plus, Menu, FolderOpen } from "lucide-react";
+import { Home, MessageCircle, Users, Bell, User, Search, Settings, UserPlus, PlaySquare, Plus, Menu, FolderOpen, Star } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -114,110 +114,49 @@ export function TopNavigation({ pendingRequestsCount }: TopNavigationProps) {
     }
   };
 
-  // Mobile navigation (Facebook-style top bar)
+  // Mobile navigation (Instagram-style top bar)
   if (isMobile) {
     return (
-      <nav className="bg-background shadow-sm border-b border-facebook-gray-200 fixed top-0 left-0 right-0 z-[70]">
-        {/* Main top bar - Facebook Mobile Style */}
+      <nav className="bg-background shadow-sm border-b fixed top-0 left-0 right-0 z-[70]">
+        {/* Simplified top bar - Instagram Style */}
         <div className="flex items-center justify-between h-14 px-4">
           {/* Logo - Left Side */}
-          <HSocialLogo size="md" />
+          <HSocialLogo size="md" showText />
           
-          {/* Navigation Icons - Right */}
-          <div className="flex items-center gap-1">
-            {/* Search */}
+          {/* Action Icons - Right (only 3) */}
+          <div className="flex items-center gap-2">
+            {/* Notifications with Star */}
             <Button
               variant="ghost"
               size="icon"
-              className="h-10 w-10 rounded-full bg-muted hover:bg-muted/80"
-              onClick={() => setShowFullScreenSearch(true)}
-            >
-              <Search className="h-5 w-5" />
-            </Button>
-            
-            {/* Messenger */}
-            <Button
-              variant="ghost" 
-              size="icon"
-              className="h-10 w-10 rounded-full bg-muted hover:bg-muted/80 relative"
-              onClick={() => navigate("/messages")}
-            >
-              <MessageCircle className="h-5 w-5" />
-              {pendingRequestsCount > 0 && (
-                <Badge 
-                  variant="destructive" 
-                  className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs bg-facebook-red"
-                >
-                  {pendingRequestsCount}
-                </Badge>
-              )}
-            </Button>
-          </div>
-        </div>
-
-        {/* Secondary Navigation Bar - Facebook Style Icons */}
-        <div className="flex items-center justify-around h-12 bg-background">
-          {/* Home */}
-          <Link to="/" className="flex-1 flex justify-center">
-            <Button variant="ghost" size="icon" className="h-10 w-10">
-              <Home className={`h-6 w-6 ${location.pathname === '/' ? 'text-facebook-blue' : 'text-facebook-gray-600'}`} />
-            </Button>
-          </Link>
-
-          {/* Friends */}
-          <Link to="/friends" className="flex-1 flex justify-center">
-            <Button variant="ghost" size="icon" className="h-10 w-10 relative">
-              <Users className={`h-6 w-6 ${location.pathname.startsWith('/friends') ? 'text-facebook-blue' : 'text-facebook-gray-600'}`} />
-              {pendingRequestsCount > 0 && (
-                <Badge 
-                  variant="destructive" 
-                  className="absolute -top-1 -right-1 h-4 w-4 rounded-full p-0 flex items-center justify-center text-xs bg-facebook-red"
-                >
-                  {pendingRequestsCount}
-                </Badge>
-              )}
-            </Button>
-          </Link>
-
-          {/* Projects */}
-          <Link to="/projects" className="flex-1 flex justify-center">
-            <Button variant="ghost" size="icon" className="h-10 w-10">
-              <FolderOpen className={`h-6 w-6 ${location.pathname.startsWith('/projects') ? 'text-facebook-blue' : 'text-facebook-gray-600'}`} />
-            </Button>
-          </Link>
-
-          {/* Reels */}
-          <Link to="/reels" className="flex-1 flex justify-center">
-            <Button variant="ghost" size="icon" className="h-10 w-10">
-              <PlaySquare className={`h-6 w-6 ${location.pathname.startsWith('/reels') ? 'text-facebook-blue' : 'text-facebook-gray-600'}`} />
-            </Button>
-          </Link>
-
-          {/* Notifications */}
-          <div className="flex-1 flex justify-center">
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className="h-10 w-10 relative"
+              className="h-10 w-10 rounded-full relative"
               onClick={() => {
                 handleNotificationClick();
                 navigate("/notifications");
               }}
             >
-              <Bell className={`h-6 w-6 ${location.pathname === '/notifications' ? 'text-facebook-blue' : 'text-facebook-gray-600'}`} />
+              <Star className="h-6 w-6" />
               {unreadNotifications > 0 && (
                 <Badge 
                   variant="destructive" 
-                  className="absolute -top-1 -right-1 h-4 w-4 rounded-full p-0 flex items-center justify-center text-xs bg-facebook-red"
+                  className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
                 >
                   {unreadNotifications}
                 </Badge>
               )}
             </Button>
-          </div>
-
-          {/* Menu */}
-          <div className="flex-1 flex justify-center">
+            
+            {/* Messages */}
+            <Button
+              variant="ghost" 
+              size="icon"
+              className="h-10 w-10 rounded-full"
+              onClick={() => navigate("/messages")}
+            >
+              <MessageCircle className="h-6 w-6" />
+            </Button>
+            
+            {/* Hamburger Menu */}
             <UserMenu />
           </div>
         </div>

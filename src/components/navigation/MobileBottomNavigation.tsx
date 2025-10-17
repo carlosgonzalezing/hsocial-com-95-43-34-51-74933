@@ -1,4 +1,4 @@
-import { Home, MessageCircle, User, FolderOpen, Bell, PlaySquare } from "lucide-react";
+import { Home, User, FolderOpen, PlaySquare, Search, PlusSquare } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -35,29 +35,23 @@ export function MobileBottomNavigation({
       badge: newPosts > 0 ? newPosts : null
     },
     {
-      icon: FolderOpen,
-      label: "Proyectos",
-      path: "/projects",
+      icon: Search,
+      label: "Explorar",
+      path: "/explore",
       badge: null
+    },
+    {
+      icon: PlusSquare,
+      label: "Crear",
+      path: "/",
+      badge: null,
+      isAction: true
     },
     {
       icon: PlaySquare,
       label: "Reels",
       path: "/reels",
       badge: null
-    },
-    {
-      icon: MessageCircle,
-      label: "Mensajes",
-      path: "/messages",
-      badge: null
-    },
-    {
-      icon: Bell,
-      label: "Notificaciones", 
-      path: "/notifications",
-      badge: unreadNotifications > 0 ? unreadNotifications : null,
-      showRedDot: unreadNotifications > 0
     },
     {
       icon: User,
@@ -69,7 +63,7 @@ export function MobileBottomNavigation({
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-background border-t z-50 md:hidden">
-      <div className="grid grid-cols-6 items-center py-2">
+      <div className="grid grid-cols-5 items-center py-2">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = location.pathname === item.path || 
@@ -86,7 +80,7 @@ export function MobileBottomNavigation({
                   : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
               )}
             >
-              <Icon className="h-5 w-5 mb-1" />
+              <Icon className="h-7 w-7 mb-1" />
               <span className="text-xs font-medium">{item.label}</span>
               
               {item.badge && (
@@ -96,10 +90,6 @@ export function MobileBottomNavigation({
                 >
                   {item.badge}
                 </Badge>
-              )}
-              
-              {item.showRedDot && (
-                <div className="absolute top-1 right-2 w-2 h-2 bg-red-500 rounded-full"></div>
               )}
             </button>
           );

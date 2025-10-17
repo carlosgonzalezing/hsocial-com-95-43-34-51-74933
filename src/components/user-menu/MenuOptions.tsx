@@ -6,7 +6,9 @@ import {
   ChevronRight,
   HelpCircle,
   MessageSquare,
-  Monitor
+  Monitor,
+  Trophy,
+  Bookmark
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -69,8 +71,40 @@ export function MenuOptions({ userId, onClose, onCopyProfileLink }: MenuOptionsP
       
       <Separator className="my-1" />
       
-      {/* Configuración y privacidad */}
+      {/* Tabla de Popularidad */}
       <div className="py-1">
+        <Button
+          variant="ghost"
+          className="w-full justify-between h-14 px-3 rounded-lg hover:bg-accent"
+          onClick={() => handleNavigate("/leaderboard")}
+        >
+          <div className="flex items-center">
+            <div className="w-9 h-9 rounded-full bg-muted flex items-center justify-center mr-3">
+              <Trophy className="h-5 w-5 text-yellow-500" />
+            </div>
+            <span className="font-medium">Tabla de Popularidad</span>
+          </div>
+          <ChevronRight className="h-5 w-5 text-muted-foreground" />
+        </Button>
+        
+        {/* Carpetas / Guardados */}
+        <Button
+          variant="ghost"
+          className="w-full justify-between h-14 px-3 rounded-lg hover:bg-accent"
+          onClick={() => handleNavigate("/saved")}
+        >
+          <div className="flex items-center">
+            <div className="w-9 h-9 rounded-full bg-muted flex items-center justify-center mr-3">
+              <Bookmark className="h-5 w-5" />
+            </div>
+            <span className="font-medium">Guardados</span>
+          </div>
+          <ChevronRight className="h-5 w-5 text-muted-foreground" />
+        </Button>
+      
+        <Separator className="my-2" />
+      
+        {/* Configuración y privacidad */}
         <Button
           variant="ghost"
           className="w-full justify-between h-14 px-3 rounded-lg hover:bg-accent"

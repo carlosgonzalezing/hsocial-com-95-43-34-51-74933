@@ -26,6 +26,9 @@ const Profile = React.lazy(() => import("@/pages/Profile"));
 const Projects = React.lazy(() => import("@/pages/Projects"));
 const Reels = React.lazy(() => import("@/pages/Reels"));
 const PasswordReset = React.lazy(() => import("@/pages/PasswordReset"));
+const Explore = React.lazy(() => import("@/pages/Explore"));
+const Leaderboard = React.lazy(() => import("@/pages/Leaderboard"));
+const Saved = React.lazy(() => import("@/pages/Saved"));
 // Opportunities removed
 const Settings = React.lazy(() => import("@/pages/settings/Settings"));
 const AccountSettings = React.lazy(() => import("@/pages/settings/AccountSettings"));
@@ -135,7 +138,27 @@ const App = () => {
                   </Suspense>
                 </AuthGuard>
               } />
-              {/* Opportunities removed */}
+              <Route path="/explore" element={
+                <AuthGuard>
+                  <Suspense fallback={<LoadingSpinner />}>
+                    <Explore />
+                  </Suspense>
+                </AuthGuard>
+              } />
+              <Route path="/leaderboard" element={
+                <AuthGuard>
+                  <Suspense fallback={<LoadingSpinner />}>
+                    <Leaderboard />
+                  </Suspense>
+                </AuthGuard>
+              } />
+              <Route path="/saved" element={
+                <AuthGuard>
+                  <Suspense fallback={<LoadingSpinner />}>
+                    <Saved />
+                  </Suspense>
+                </AuthGuard>
+              } />
               
               {/* Settings pages */}
               <Route path="/settings" element={
