@@ -117,43 +117,50 @@ export function TopNavigation({ pendingRequestsCount }: TopNavigationProps) {
   // Mobile navigation (Instagram-style top bar)
   if (isMobile) {
     return (
-      <nav className="bg-black border-b border-white/10 fixed top-0 left-0 right-0 z-[70]">
-        {/* Barra superior minimalista - Estilo Instagram Dark */}
+      <nav className="bg-background shadow-sm border-b fixed top-0 left-0 right-0 z-[70]">
+        {/* Simplified top bar - Instagram Style */}
         <div className="flex items-center justify-between h-14 px-4">
-          {/* Logo "H" - Izquierda */}
-          <HSocialLogo size="md" />
+          {/* Logo - Left Side */}
+          <HSocialLogo size="md" showText />
           
-          {/* Íconos de acción - Derecha (SOLO 3) */}
-          <div className="flex items-center gap-1">
-            {/* Notificaciones - Estrella */}
+          {/* Action Icons - Right (only 3) */}
+          <div className="flex items-center gap-2">
+            {/* Notifications with Star */}
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => navigate("/notifications")}
-              className="relative h-10 w-10 text-white hover:text-gray-300 hover:bg-white/10"
+              className="h-10 w-10 rounded-full relative"
+              onClick={() => {
+                handleNotificationClick();
+                navigate("/notifications");
+              }}
             >
               <Star className="h-6 w-6" />
               {unreadNotifications > 0 && (
-                <span className="absolute top-1 right-1 h-5 w-5 rounded-full bg-red-600 text-white text-xs flex items-center justify-center font-medium">
-                  {unreadNotifications > 9 ? '9+' : unreadNotifications}
-                </span>
+                <Badge 
+                  variant="destructive" 
+                  className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
+                >
+                  {unreadNotifications}
+                </Badge>
               )}
             </Button>
             
-            {/* Mensajes */}
+            {/* Messages */}
             <Button
-              variant="ghost"
+              variant="ghost" 
               size="icon"
+              className="h-10 w-10 rounded-full"
               onClick={() => navigate("/messages")}
-              className="relative h-10 w-10 text-white hover:text-gray-300 hover:bg-white/10"
             >
               <MessageCircle className="h-6 w-6" />
             </Button>
             
-            {/* Menú Hamburguesa */}
+            {/* Hamburger Menu */}
             <UserMenu />
           </div>
         </div>
+
 
         {/* Full Screen Search for Mobile */}
         <FullScreenSearch 

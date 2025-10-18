@@ -19,8 +19,13 @@ export function MobileBottomNavigation({
   const navigate = useNavigate();
   const location = useLocation();
 
-  // CRÍTICO: NO OCULTAR la barra en ninguna pantalla (estilo Instagram)
-  // La barra debe ser SIEMPRE visible
+  // Hide bottom navigation on specific full-screen pages
+  const hideOnPaths = ['/messages', '/friend-requests', '/reels', '/settings'];
+  const shouldHide = hideOnPaths.some(path => location.pathname.startsWith(path));
+
+  if (shouldHide) {
+    return null;
+  }
 
   const navItems = [
     {

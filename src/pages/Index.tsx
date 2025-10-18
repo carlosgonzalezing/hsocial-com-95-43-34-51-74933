@@ -1,4 +1,5 @@
 import React from "react";
+import { PostCreatorCompact } from "@/components/PostCreatorCompact";
 import { PostCreatorModal } from "@/components/PostCreatorModal";
 import { Feed } from "@/components/feed/Feed";
 import { FacebookLayout } from "@/components/layout/FacebookLayout";
@@ -47,10 +48,15 @@ export default function Index() {
   return (
     <FacebookLayout>
       <div className="w-full space-y-0">
-        {/* Stories Bar - Estilo Instagram */}
         <StoriesBar />
         
-        {/* Feed Principal - Sin campo de texto */}
+        <PostCreatorCompact 
+          onOpenModal={handleOpenModal}
+          onOpenWithMedia={handleOpenModalWithMedia}
+          onFileDrop={handleFileDrop}
+          onMoodSelect={handleMoodSelect}
+        />
+        
         <Feed />
       </div>
 

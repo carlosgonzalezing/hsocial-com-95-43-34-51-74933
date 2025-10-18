@@ -30,11 +30,10 @@ export function StoriesBar() {
 
   return (
     <>
-      {/* Stories Bar - Estilo Instagram Dark Mode */}
-      <div className="w-full border-b border-white/10 bg-black">
+      <div className="w-full border-b bg-card">
         <ScrollArea className="w-full">
-          <div className="flex gap-4 py-3 px-4">
-            {/* Create Story Button - Primer círculo con + */}
+          <div className="flex gap-3 py-4 px-4">
+            {/* Create Story Button */}
             {user && (
               <StoryCircle
                 isCreate
@@ -51,7 +50,7 @@ export function StoriesBar() {
               />
             ))}
           </div>
-          <ScrollBar orientation="horizontal" className="hidden" />
+          <ScrollBar orientation="horizontal" />
         </ScrollArea>
       </div>
 
