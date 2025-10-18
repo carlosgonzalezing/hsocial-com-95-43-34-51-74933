@@ -30,9 +30,9 @@ export function StoriesBar() {
 
   return (
     <>
-      <div className="w-full border-b bg-card">
+      <div className="w-full border-b border-white/10 bg-black">
         <ScrollArea className="w-full">
-          <div className="flex gap-3 py-4 px-4">
+          <div className="flex gap-4 py-4 px-4">
             {/* Create Story Button */}
             {user && (
               <StoryCircle

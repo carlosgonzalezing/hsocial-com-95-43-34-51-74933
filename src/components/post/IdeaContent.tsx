@@ -32,14 +32,15 @@ export function IdeaContent({ idea, content }: IdeaContentProps) {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
+      {/* Badge Idea Colaborativa - amarillo */}
+      <Badge className="bg-yellow-500 text-black hover:bg-yellow-600 font-semibold px-3 py-1">
+        💡 Idea Colaborativa
+      </Badge>
+      
       <div className="px-4 py-3 rounded-lg border border-border bg-card">
         {/* Header */}
         <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center">
-            <Lightbulb className="h-5 w-5 text-primary mr-2" />
-            <span className="font-medium text-lg">Idea Colaborativa</span>
-          </div>
           {idea.project_phase && (
             <Badge className={getPhaseColor(idea.project_phase)}>
               {idea.project_phase}
@@ -164,6 +165,14 @@ export function IdeaContent({ idea, content }: IdeaContentProps) {
           )}
         </div>
       </div>
+      
+      {/* Botón Unirme - azul Instagram */}
+      <Button 
+        className="w-full bg-[#0095f6] hover:bg-[#0081d9] text-white font-semibold"
+        size="lg"
+      >
+        Unirme
+      </Button>
     </div>
   );
 }

@@ -19,14 +19,6 @@ export function MobileBottomNavigation({
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Hide bottom navigation on specific full-screen pages
-  const hideOnPaths = ['/messages', '/friend-requests', '/reels', '/settings'];
-  const shouldHide = hideOnPaths.some(path => location.pathname.startsWith(path));
-
-  if (shouldHide) {
-    return null;
-  }
-
   const navItems = [
     {
       icon: Home,
@@ -63,7 +55,7 @@ export function MobileBottomNavigation({
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-black border-t border-white/10 z-50 md:hidden">
-      <div className="grid grid-cols-5 items-center py-2">
+      <div className="grid grid-cols-5 items-center h-16">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = location.pathname === item.path || 
@@ -73,15 +65,15 @@ export function MobileBottomNavigation({
             <button
               key={item.label}
               onClick={() => navigate(item.path)}
-              className={cn(
-                "flex flex-col items-center justify-center p-2 rounded-lg transition-colors relative w-full",
-                isActive 
-                  ? "text-white" 
-                  : "text-gray-400 hover:text-gray-200"
-              )}
+              className="flex flex-col items-center justify-center h-full"
             >
-              <Icon className="h-7 w-7 mb-1" />
-              <span className="text-xs font-medium">{item.label}</span>
+              <Icon 
+                className={cn(
+                  "h-7 w-7",
+                  isActive ? "text-[#0095f6]" : "text-white"
+                )}
+                strokeWidth={isActive ? 2 : 1.5}
+              />
               
               {item.badge && (
                 <Badge 

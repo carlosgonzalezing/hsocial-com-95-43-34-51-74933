@@ -2,10 +2,12 @@ import { useState } from "react";
 import { Layout } from "@/components/layout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
-import { Search, Lightbulb, FolderOpen, Users } from "lucide-react";
+import { Search, Lightbulb, FolderOpen, Users, Trophy } from "lucide-react";
 import { IdeaGrid } from "@/components/explore/IdeaGrid";
 import { ProjectGrid } from "@/components/explore/ProjectGrid";
 import { UserGrid } from "@/components/explore/UserGrid";
+import { GroupGrid } from "@/components/explore/GroupGrid";
+import { LeaderboardGrid } from "@/components/explore/LeaderboardGrid";
 
 export default function Explore() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -13,35 +15,51 @@ export default function Explore() {
 
   return (
     <Layout hideLeftSidebar hideRightSidebar>
-      <div className="min-h-screen bg-background pb-20">
+      <div className="min-h-screen bg-black pb-20">
         {/* Sticky search bar */}
-        <div className="sticky top-14 z-40 bg-background border-b px-4 py-3">
+        <div className="sticky top-14 z-40 bg-black border-b border-white/10 px-4 py-3">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
             <Input
               type="text"
-              placeholder="Buscar usuarios, ideas, proyectos..."
+              placeholder="Buscar ideas, proyectos, usuarios..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 h-11 rounded-full"
+              className="pl-10 h-11 rounded-lg bg-[#262626] border-none text-white placeholder:text-gray-400"
             />
           </div>
         </div>
 
-        {/* Content tabs */}
+        {/* Content tabs - 4 tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="w-full justify-around h-12 rounded-none border-b bg-background sticky top-[120px] z-30">
-            <TabsTrigger value="ideas" className="flex-1 gap-2">
+          <TabsList className="w-full justify-around h-12 rounded-none border-b border-white/10 bg-black sticky top-[118px] z-30">
+            <TabsTrigger 
+              value="ideas" 
+              className="flex-1 gap-2 text-white data-[state=active]:text-[#0095f6] data-[state=active]:border-b-2 data-[state=active]:border-[#0095f6]"
+            >
               <Lightbulb className="h-4 w-4" />
-              Ideas
+              IDEAS
             </TabsTrigger>
-            <TabsTrigger value="proyectos" className="flex-1 gap-2">
+            <TabsTrigger 
+              value="proyectos" 
+              className="flex-1 gap-2 text-white data-[state=active]:text-[#0095f6] data-[state=active]:border-b-2 data-[state=active]:border-[#0095f6]"
+            >
               <FolderOpen className="h-4 w-4" />
-              Proyectos
+              PROYECTOS
             </TabsTrigger>
-            <TabsTrigger value="usuarios" className="flex-1 gap-2">
+            <TabsTrigger 
+              value="grupos" 
+              className="flex-1 gap-2 text-white data-[state=active]:text-[#0095f6] data-[state=active]:border-b-2 data-[state=active]:border-[#0095f6]"
+            >
               <Users className="h-4 w-4" />
-              Usuarios
+              GRUPOS
+            </TabsTrigger>
+            <TabsTrigger 
+              value="lideres" 
+              className="flex-1 gap-2 text-white data-[state=active]:text-[#0095f6] data-[state=active]:border-b-2 data-[state=active]:border-[#0095f6]"
+            >
+              <Trophy className="h-4 w-4" />
+              LÍDERES
             </TabsTrigger>
           </TabsList>
 
@@ -53,8 +71,12 @@ export default function Explore() {
             <ProjectGrid searchQuery={searchQuery} />
           </TabsContent>
 
-          <TabsContent value="usuarios" className="p-4 mt-0">
-            <UserGrid searchQuery={searchQuery} />
+          <TabsContent value="grupos" className="p-4 mt-0">
+            <GroupGrid searchQuery={searchQuery} />
+          </TabsContent>
+
+          <TabsContent value="lideres" className="p-4 mt-0">
+            <LeaderboardGrid searchQuery={searchQuery} />
           </TabsContent>
         </Tabs>
       </div>

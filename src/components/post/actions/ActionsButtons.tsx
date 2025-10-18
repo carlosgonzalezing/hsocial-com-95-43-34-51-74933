@@ -68,7 +68,7 @@ export function ActionsButtons({
             className="flex-1 flex items-center justify-center gap-2 py-3 text-muted-foreground hover:bg-accent/5 rounded-none font-normal"
             onClick={onComment}
           >
-            <MessageCircle className="h-5 w-5" />
+            <MessageCircle className="h-5 w-5" strokeWidth={1.5} />
             <span className="text-sm">Comentar</span>
           </Button>
           
@@ -79,7 +79,7 @@ export function ActionsButtons({
                 variant="ghost"
                 className="flex-1 flex items-center justify-center gap-2 py-3 text-muted-foreground hover:bg-accent/5 rounded-none font-normal"
               >
-                <Share2 className="h-5 w-5" />
+                <Share2 className="h-5 w-5" strokeWidth={1.5} />
                 <span className="text-sm">Compartir</span>
               </Button>
             </ShareOptions>
@@ -89,7 +89,7 @@ export function ActionsButtons({
               className="flex-1 flex items-center justify-center gap-2 py-3 text-muted-foreground hover:bg-accent/5 rounded-none font-normal"
               onClick={onShare}
             >
-              <Share2 className="h-5 w-5" />
+              <Share2 className="h-5 w-5" strokeWidth={1.5} />
               <span className="text-sm">Compartir</span>
             </Button>
           )}
@@ -118,7 +118,7 @@ export function ActionsButtons({
           className="flex-1 flex items-center justify-center gap-2 py-3 text-muted-foreground hover:bg-accent/5 rounded-lg mx-1 font-normal"
           onClick={onComment}
         >
-          <MessageCircle className="h-5 w-5" />
+          <MessageCircle className="h-5 w-5" strokeWidth={1.5} />
           <span>Comentar</span>
         </Button>
         
@@ -129,7 +129,7 @@ export function ActionsButtons({
               variant="ghost"
               className="flex-1 flex items-center justify-center gap-2 py-3 text-muted-foreground hover:bg-accent/5 rounded-lg mx-1 font-normal"
             >
-              <Share2 className="h-5 w-5" />
+              <Share2 className="h-5 w-5" strokeWidth={1.5} />
               <span>Compartir</span>
             </Button>
           </ShareOptions>
@@ -139,7 +139,7 @@ export function ActionsButtons({
             className="flex-1 flex items-center justify-center gap-2 py-3 text-muted-foreground hover:bg-accent/5 rounded-lg mx-1 font-normal"
             onClick={onShare}
           >
-            <Share2 className="h-5 w-5" />
+            <Share2 className="h-5 w-5" strokeWidth={1.5} />
             <span>Compartir</span>
           </Button>
         )}

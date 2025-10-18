@@ -52,25 +52,35 @@ export function ProjectGrid({ searchQuery }: { searchQuery: string }) {
       {projects?.map((project) => (
         <Card 
           key={project.id} 
-          className="overflow-hidden cursor-pointer hover:shadow-lg transition-shadow"
+          className="overflow-hidden cursor-pointer hover:opacity-80 transition-opacity bg-[#262626] border-none"
           onClick={() => navigate(`/projects`)}
         >
-          <CardContent className="p-4">
-            <div className="mb-3">
-              <FolderOpen className="h-10 w-10 text-blue-500 mb-2" />
-              <h3 className="font-semibold text-sm line-clamp-2 min-h-[40px]">
-                {project.content?.substring(0, 60) || 'Proyecto sin título'}...
-              </h3>
+          {/* Imagen o placeholder */}
+          {project.media_url ? (
+            <img 
+              src={project.media_url} 
+              alt={project.content}
+              className="w-full h-40 object-cover"
+            />
+          ) : (
+            <div className="w-full h-40 bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center">
+              <FolderOpen className="h-12 w-12 text-white" />
             </div>
+          )}
+          
+          <CardContent className="p-3">
+            <h3 className="font-semibold text-sm line-clamp-2 text-white">
+              {project.content?.substring(0, 60) || 'Proyecto sin título'}...
+            </h3>
             
             <div className="mt-2 flex items-center gap-2">
               <Avatar className="h-5 w-5">
                 <AvatarImage src={project.profiles?.avatar_url} />
-                <AvatarFallback className="text-xs">
+                <AvatarFallback className="text-xs bg-gray-700 text-white">
                   {project.profiles?.username?.[0]?.toUpperCase() || 'U'}
                 </AvatarFallback>
               </Avatar>
-              <span className="text-xs text-muted-foreground truncate">
+              <span className="text-xs text-gray-400 truncate">
                 @{project.profiles?.username || 'usuario'}
               </span>
             </div>

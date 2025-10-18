@@ -117,11 +117,11 @@ export function TopNavigation({ pendingRequestsCount }: TopNavigationProps) {
   // Mobile navigation (Instagram-style top bar)
   if (isMobile) {
     return (
-      <nav className="bg-background shadow-sm border-b fixed top-0 left-0 right-0 z-[70]">
+      <nav className="bg-black border-b border-white/10 fixed top-0 left-0 right-0 z-[70]">
         {/* Simplified top bar - Instagram Style */}
         <div className="flex items-center justify-between h-14 px-4">
-          {/* Logo - Left Side */}
-          <HSocialLogo size="md" showText />
+          {/* Logo - Only "H" */}
+          <HSocialLogo size="md" showText={false} />
           
           {/* Action Icons - Right (only 3) */}
           <div className="flex items-center gap-2">
@@ -129,7 +129,7 @@ export function TopNavigation({ pendingRequestsCount }: TopNavigationProps) {
             <Button
               variant="ghost"
               size="icon"
-              className="h-10 w-10 rounded-full relative"
+              className="h-10 w-10 rounded-full relative text-white hover:text-gray-300"
               onClick={() => {
                 handleNotificationClick();
                 navigate("/notifications");
@@ -150,7 +150,7 @@ export function TopNavigation({ pendingRequestsCount }: TopNavigationProps) {
             <Button
               variant="ghost" 
               size="icon"
-              className="h-10 w-10 rounded-full"
+              className="h-10 w-10 rounded-full text-white hover:text-gray-300"
               onClick={() => navigate("/messages")}
             >
               <MessageCircle className="h-6 w-6" />
@@ -160,7 +160,6 @@ export function TopNavigation({ pendingRequestsCount }: TopNavigationProps) {
             <UserMenu />
           </div>
         </div>
-
 
         {/* Full Screen Search for Mobile */}
         <FullScreenSearch 
