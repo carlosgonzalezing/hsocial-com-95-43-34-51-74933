@@ -52,25 +52,10 @@ export const HSocialLogo = ({
   const content = (
     <div className={`flex items-center group ${className}`}>
       <div className="relative">
-        {imageError || !mounted ? (
-          // Fallback to gradient text
-          <h1 className={`${textSizeClasses[size]} font-black bg-gradient-to-r from-primary via-primary to-primary/80 bg-clip-text text-transparent tracking-tight group-hover:scale-110 transition-transform duration-300`}>
-            HSocial
-          </h1>
-        ) : (
-          // Logo image
-          <img
-            src={logoSrc}
-            alt="HSocial"
-            className={`${sizeClasses[size]} group-hover:scale-110 transition-transform duration-300`}
-            onError={handleImageError}
-          />
-        )}
-        {showText && (
-          <span className="ml-2 font-semibold text-foreground">
-            HSocial
-          </span>
-        )}
+        {/* Solo mostrar "H" con el estilo del logo */}
+        <h1 className={`${textSizeClasses[size]} font-black bg-gradient-to-r from-primary via-primary to-primary/80 bg-clip-text text-transparent tracking-tight group-hover:scale-110 transition-transform duration-300`}>
+          H
+        </h1>
         <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 to-primary/10 blur-sm rounded-lg opacity-50 group-hover:opacity-100 transition-opacity duration-300" />
       </div>
     </div>
