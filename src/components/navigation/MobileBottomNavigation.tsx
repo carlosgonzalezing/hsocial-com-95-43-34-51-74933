@@ -1,4 +1,4 @@
-import { Home, User, FolderOpen, PlaySquare, Search, PlusSquare } from "lucide-react";
+import { Home, User, Search, PlusSquare, Video } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -40,7 +40,7 @@ export function MobileBottomNavigation({
       isAction: true
     },
     {
-      icon: PlaySquare,
+      icon: Video,
       label: "Reels",
       path: "/reels",
       badge: null
@@ -70,9 +70,10 @@ export function MobileBottomNavigation({
               <Icon 
                 className={cn(
                   "h-7 w-7",
-                  isActive ? "text-[#0095f6]" : "text-white"
+                  isActive ? "text-[#0095f6] fill-current" : "text-white"
                 )}
-                strokeWidth={isActive ? 2 : 1.5}
+                strokeWidth={1.5}
+                fill={isActive ? "currentColor" : "none"}
               />
               
               {item.badge && (
