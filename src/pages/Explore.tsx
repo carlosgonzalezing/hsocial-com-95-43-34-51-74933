@@ -15,7 +15,7 @@ export default function Explore() {
 
   return (
     <Layout hideLeftSidebar hideRightSidebar>
-      <div className="min-h-screen bg-black pb-20">
+      <div className="min-h-screen bg-black pb-24">
         {/* Sticky search bar */}
         <div className="sticky top-14 z-40 bg-black border-b border-white/10 px-4 py-3">
           <div className="relative">

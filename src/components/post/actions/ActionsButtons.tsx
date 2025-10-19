@@ -50,7 +50,7 @@ export function ActionsButtons({
   // Mobile layout - Facebook style
   if (isMobile) {
     return (
-      <div className="flex items-center justify-between border-t border-facebook-gray-200 bg-card">
+      <div className="flex items-center justify-between border-t border-white/10 bg-black">
         <div className="flex items-center w-full">
           {/* Me gusta - Facebook style reactions */}
           <div className="flex-1 flex items-center justify-center">
@@ -100,7 +100,7 @@ export function ActionsButtons({
 
   // Desktop layout - Facebook style
   return (
-    <div className="flex items-center justify-between border-t border-facebook-gray-200 bg-card px-6">
+    <div className="flex items-center justify-between border-t border-white/10 bg-black px-6">
       <div className="flex items-center w-full">
         {/* Me gusta - Facebook style reactions */}
         <div className="flex-1 flex items-center justify-center">

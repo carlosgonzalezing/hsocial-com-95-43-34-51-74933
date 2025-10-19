@@ -38,7 +38,7 @@ export function IdeaContent({ idea, content }: IdeaContentProps) {
         💡 Idea Colaborativa
       </Badge>
       
-      <div className="px-4 py-3 rounded-lg border border-border bg-card">
+      <div className="px-4 py-3 rounded-lg border border-white/10 bg-black">
         {/* Header */}
         <div className="flex items-center justify-between mb-3">
           {idea.project_phase && (
