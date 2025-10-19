@@ -1,16 +1,40 @@
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { StoryCircle } from "./StoryCircle";
 import { useStories } from "@/hooks/stories/use-stories";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { StoryViewer } from "./StoryViewer";
 import { StoryCreator } from "./StoryCreator";
 import { useAuth } from "@/hooks/use-auth";
+import { supabase } from "@/integrations/supabase/client";
 
 export function StoriesBar() {
   const { user } = useAuth();
   const { stories, isLoading } = useStories();
   const [selectedStoryId, setSelectedStoryId] = useState<string | null>(null);
   const [showCreator, setShowCreator] = useState(false);
+  const [currentUserProfile, setCurrentUserProfile] = useState<{ avatar_url: string | null; username: string } | null>(null);
+
+  // Fetch current user profile
+  useEffect(() => {
+    if (!user?.id) {
+      setCurrentUserProfile(null);
+      return;
+    }
+
+    const fetchProfile = async () => {
+      const { data } = await supabase
+        .from('profiles')
+        .select('avatar_url, username')
+        .eq('id', user.id)
+        .single();
+      
+      if (data) {
+        setCurrentUserProfile(data);
+      }
+    };
+
+    fetchProfile();
+  }, [user?.id]);
 
   if (isLoading) {
     return (
@@ -33,13 +57,15 @@ export function StoriesBar() {
       <div className="w-full border-b border-white/10 bg-black">
         <ScrollArea className="w-full">
           <div className="flex gap-4 py-4 px-4">
-            {/* Create Story Button */}
-            {user && (
-              <StoryCircle
-                isCreate
-                onClick={() => setShowCreator(true)}
-              />
-            )}
+          {/* Create Story Button */}
+          {user && currentUserProfile && (
+            <StoryCircle
+              isCreate
+              onClick={() => setShowCreator(true)}
+              currentUserAvatar={currentUserProfile.avatar_url}
+              currentUsername={currentUserProfile.username}
+            />
+          )}
 
             {/* Story Circles */}
             {stories.map((story) => (

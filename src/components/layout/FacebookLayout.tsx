@@ -108,7 +108,7 @@ export function FacebookLayout({
   if (isMobile) {
     return (
       <ChatSystemProvider>
-        <div className="min-h-screen w-full bg-background text-foreground overflow-x-hidden">
+        <div className="min-h-screen w-full bg-black text-white overflow-x-hidden">
           {!hideNavigation && (
             <div className="fixed top-0 left-0 right-0 z-50 w-full">
               <TopNavigation pendingRequestsCount={pendingRequestsCount} />
